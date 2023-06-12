@@ -111,12 +111,10 @@ wait_for_keypress(win, txt)
 # Run Trivia Task
 
 # cycle through rounds
-
-
 for round in range(N_ROUNDS):
     # choose difficulty
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
-    # present question and get answer
+    # present question and get response
 	if difficulty == 'easy':
 		response = present_question(win, easy_qs[round], ROUND_TIME)
 	elif difficulty == 'medium':
@@ -125,6 +123,10 @@ for round in range(N_ROUNDS):
 		response = present_question(win, hard_qs[round], ROUND_TIME)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
+	# check answer
+	accuracy = check_answer(response)
+	#  display points earned
+	present_feedback(win, accuracy)
 
 t2 = time()
 print('Task Complete.')

@@ -80,8 +80,6 @@ def present_question(win, question, wait_time):
 	mouse = event.Mouse()
 	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
 	box = visual.TextBox2(win, '', color = 'white', editable = True)
-	#box.clear()
-	#box.setAutoDraw(False)
 	q_msg.draw()
 	box.draw()
 	win.flip()
@@ -109,37 +107,12 @@ def present_question(win, question, wait_time):
 	
 	return resp
 
-def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
+def check_answer(response):
 	'''
-	If chose to work, presents grip strength segment,
-	otherwise presents "Rest".
-
-	Returns tuple:
-		avg_grip (float): mean grip strength for that trial
-		success (Boolean): whether work trial succeeded
+	Compare participant's response to correct answer and 
+	return accuracy (1 or 0). 
 	'''
-	# if choose to work
-	if ('left' in choice):
-		# Countdown to Grip
-		present_text(win, '3')
-		present_text(win, '3, 2')
-		present_text(win, '3, 2, 1')
-
-		# Grip
-		present_text(win, 'SQUEEZE', 'white', 0.1)
-		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
-		return (avg_grip, success)
-
-	# if choose to rest
-	elif ('right' in choice):
-		# rest segment
-		present_text(win, 'You may rest.')
-		return (-99, False)
-
-	# Anything else
-	else:
-		# catch all
-		present_text(win, 'Please make a choice.')
+	
 
 def present_feedback(win, trial, choice, success):
 	'''
@@ -230,4 +203,38 @@ def present_feedback(win, trial, choice, success):
 	
 	present_text(win, outcome)
 	return (points_self, points_other)
+
+def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
+	'''
+	If chose to work, presents grip strength segment,
+	otherwise presents "Rest".
+
+	Returns tuple:
+		avg_grip (float): mean grip strength for that trial
+		success (Boolean): whether work trial succeeded
+	'''
+	# if choose to work
+	if ('left' in choice):
+		# Countdown to Grip
+		present_text(win, '3')
+		present_text(win, '3, 2')
+		present_text(win, '3, 2, 1')
+
+		# Grip
+		present_text(win, 'SQUEEZE', 'white', 0.1)
+		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
+		return (avg_grip, success)
+
+	# if choose to rest
+	elif ('right' in choice):
+		# rest segment
+		present_text(win, 'You may rest.')
+		return (-99, False)
+
+	# Anything else
+	else:
+		# catch all
+		present_text(win, 'Please make a choice.')
+
+
 	
