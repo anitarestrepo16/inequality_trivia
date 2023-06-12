@@ -80,8 +80,8 @@ def present_question(win, question, wait_time):
 	mouse = event.Mouse()
 	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
 	box = visual.TextBox2(win, '', color = 'white', editable = True)
-	box.clear()
-	box.setAutoDraw(False)
+	#box.clear()
+	#box.setAutoDraw(False)
 	q_msg.draw()
 	box.draw()
 	win.flip()
@@ -90,14 +90,24 @@ def present_question(win, question, wait_time):
 	end_txt = False
 	while not end_txt:
 		if mouse.getPressed() != [0, 0, 0]:
-			return box.getText()
+			resp = box.getText()
+			box.clear()
+			box.setAutoDraw(False)
+			win.flip()
+			end_txt = True
 		else:
 			box.setAutoDraw(True)
 			q_msg.draw()
 			win.flip()
 			t = time()
 			if t > t0 + wait_time:
-				return box.getText()
+				resp = box.getText()
+				box.clear()
+				box.setAutoDraw(False)
+				win.flip()
+				end_txt = True
+	
+	return resp
 
 def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	'''

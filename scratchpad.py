@@ -3,7 +3,12 @@ from psychopy import visual, event, core
 from time import time
 import random
 
-from utils.ui import choose_difficulty, present_text, present_question
+from utils.ui import (
+    choose_difficulty, 
+    present_text, 
+    present_question,
+    fixation_cross
+)
 
 
 win = visual.Window(
@@ -17,7 +22,13 @@ win = visual.Window(
 	allowGUI = False
 	)
 
-print(present_question(win, 'blah', 30))
 
-print(present_question(win, 'blah', 30))
-print(present_question(win, 'blah', 30))
+
+resp1 = present_question(win, 'blah1', 30)
+print(resp1)
+fixation_cross(win)
+resp2 = present_question(win, 'blah2', 30)
+print(resp2)
+fixation_cross(win)
+resp3 = present_question(win, 'blah3', 30)
+print(resp3)
