@@ -77,7 +77,6 @@ def present_question(win, question, wait_time):
 	'''
 	Present question, allow response entry as text and record.
 	'''
-	mouse = event.Mouse()
 	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
 	box = visual.TextBox2(win, '', color = 'white', editable = True)
 	q_msg.draw()
@@ -87,7 +86,8 @@ def present_question(win, question, wait_time):
 	t = time()
 	end_txt = False
 	while not end_txt:
-		if mouse.getPressed() != [0, 0, 0]:
+		keys = event.getKeys()
+		if 'return' in keys:
 			resp = box.getText()
 			box.clear()
 			box.setAutoDraw(False)
@@ -104,17 +104,23 @@ def present_question(win, question, wait_time):
 				box.setAutoDraw(False)
 				win.flip()
 				end_txt = True
+			else:
+				continue
 	
 	return resp
 
-def check_answer(response):
+def check_answer(response, answer):
 	'''
 	Compare participant's response to correct answer and 
 	return accuracy (1 or 0). 
 	'''
-	
+	if response == answer:
+		return 1
+	else:
+		return 0
 
-def present_feedback(win, trial, choice, success):
+
+def present_feedback(win, difficulty, accuracy):
 	'''
 	Present text with points lost or gained and return
 		number of points.
@@ -122,87 +128,39 @@ def present_feedback(win, trial, choice, success):
 	# default
 	outcome = 'nothing'
 	
-	# if chose rest
-	if ('right' in choice):
-		# if self reward trial
-		if (trial == 'self_reward'):
-			outcome = "+1 point for you"
+	# if difficulty is easy
+	if difficulty == 'easy':
+		# if got it right
+		if accuracy == 1:
+			outcome = "+$1.00 for you"
 			points_self = 1
-			points_other = 0
-		# if other reward trial
-		elif (trial == 'other_reward'):
-			outcome = "+1 point for the next participant"
-			points_self = 0
-			points_other = 1
-		# if self punishment trial
-		elif (trial == 'self_punishment'):
-			outcome = "-1 point for you"
+		# if got it wrong
+		elif accuracy == 0:
+			outcome = "-$1.00 for you"
 			points_self = -1
-			points_other = 0
-		# if other punishment trial
-		elif (trial == 'other_punishment'):
-			outcome = "-1 point for the next participant"
-			points_self = 0
-			points_other = -1
-		else:
-			outcome = 'Warning, wrong input'
-			points_self = 0
-			points_other = 0
-	
-	# if worked and succeeded
-	elif ('left' in choice) & (success):
-		if trial == 'self_reward':
-			outcome = "Success! \n +10 points for you"
-			points_self = 10
-			points_other = 0
-		elif trial == 'self_punishment':
-			outcome = "Success! \n -0 points for you"
-			points_self = 0
-			points_other = 0
-		elif trial == 'other_reward':
-			outcome = 'Success! \n +10 points for the next participant'
-			points_self = 0
-			points_other = 10
-		elif trial == 'other_punishment':
-			outcome = 'Success! \n -0 points for the next participant'
-			points_self = 0
-			points_other = 0
-		else:
-			outcome = 'Warning, wrong input'
-			points_self = 0
-			points_other = 0
-
-	# if worked and failed
-	elif ('left' in choice) & (not success):
-		if trial == 'self_reward':
-			outcome = "Failed. \n +0 points for you"
-			points_self = 0
-			points_other = 0
-		elif trial == 'self_punishment':
-			outcome = "Failed. \n -10 points for you"
-			points_self = -10
-			points_other = 0
-		elif trial == 'other_reward':
-			outcome = 'Failed. \n +0 points for the next participant'
-			points_self = 0
-			points_other = 0
-		elif trial == 'other_punishment':
-			outcome = 'Failed. \n -10 points for the next participant'
-			points_self = 0
-			points_other = -10
-		else:
-			outcome = 'Warning, wrong input'
-			points_self = 0
-			points_other = 0
-	
-	# sanity check
-	if points_self != 0:
-		assert points_other == 0
-	if points_other != 0:
-		assert points_self == 0
+	# if difficulty is medium
+	elif difficulty == 'medium':
+		# if got it right
+		if accuracy == 1:
+			outcome = "+$3.00 for you"
+			points_self = 3
+		# if got it wrong
+		elif accuracy == 0:
+			outcome = "-$3.00 for you"
+			points_self = -3
+	# if difficulty is hard
+	elif difficulty == 'hard':
+		# if got it right
+		if accuracy == 1:
+			outcome = "+$5.00 for you"
+			points_self = 5
+		# if got it wrong
+		elif accuracy == 0:
+			outcome = "-$5.00 for you"
+			points_self = -5
 	
 	present_text(win, outcome)
-	return (points_self, points_other)
+	return points_self
 
 def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	'''

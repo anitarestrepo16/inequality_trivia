@@ -70,20 +70,15 @@ class CSVWriter_trial:
             os.makedirs(dir)
         fpath = os.path.join(dir, 'subject%d_trial_dat.csv'%subj_num)
         self._f = open(fpath, 'w')
-        self._f.write('block_num,trial_num,trial_type,offer,choice,\
-                      avg_grip,success,outcome_self,outcome_other')
+        self._f.write('trial_num,difficulty,question,answer,response,accuracy,points_earned')
 
-    def write(self, block_num, trial_num, trial_type, offer,\
-               choice, avg_grip, success, outcome_self, \
-                outcome_other):
+    def write(self, trial_num, difficulty, question, answer, response, accuracy, points_earned):
         '''
         writes a trial's parameters to log
         '''
 
-        line = '\n%i,%i,%s,%s,%s,%f,%i,%i,%i'%(
-            block_num, trial_num, trial_type, offer,\
-                choice, avg_grip, success, outcome_self,\
-                      outcome_other)
+        line = '\n%i,%s,%s,%s,%s,%i,%i'%(
+            trial_num, difficulty, question, answer, response, accuracy, points_earned)
         self._f.write(line)
 
     def close(self):

@@ -6,9 +6,46 @@ import random
 from utils.ui import (
     choose_difficulty, 
     present_text, 
-    present_question,
+    #present_question,
     fixation_cross
 )
+
+def present_question(win, question, wait_time):
+	'''
+	Present question, allow response entry as text and record.
+	'''
+	#mouse = event.Mouse()
+	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
+	box = visual.TextBox2(win, '', color = 'white', editable = True)
+	q_msg.draw()
+	box.draw()
+	win.flip()
+	t0 = time()
+	t = time()
+	end_txt = False
+	while not end_txt:
+		keys = event.getKeys()
+		if 'return' in keys:
+			resp = box.getText()
+			box.clear()
+			box.setAutoDraw(False)
+			win.flip()
+			end_txt = True
+		else:
+			box.setAutoDraw(True)
+			q_msg.draw()
+			win.flip()
+			t = time()
+			if t > t0 + wait_time:
+				resp = box.getText()
+				box.clear()
+				box.setAutoDraw(False)
+				win.flip()
+				end_txt = True
+			else:
+				continue
+	
+	return resp
 
 
 win = visual.Window(
@@ -22,7 +59,8 @@ win = visual.Window(
 	allowGUI = False
 	)
 
-
+present_text(win, "press enter")
+event.waitKeys(keyList = ['return'])
 
 resp1 = present_question(win, 'blah1', 30)
 print(resp1)

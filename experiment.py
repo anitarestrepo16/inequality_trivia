@@ -8,17 +8,48 @@ from utils.ui import (
     present_text,
     wait_for_keypress,
     choose_difficulty,
-    present_question
+    present_question,
+    check_answer,
+    present_feedback
 )
 
+from utils.write import (
+    CSVWriter_trial,
+	CSVWriter_block,
+	CSVWriter_subj
+) 
+
+#from utils.triggerer import Triggerer
 
 #### initialize some things
 
-# make questions lists
+# parport triggers
+#parport = Triggerer(0)
+#parport.set_trigger_labels(['MVC_start', 'MVC_end',
+#			     'baseline_start', 'baseline_end',
+#			     'fatigue_start', 'fatigue_end',
+#				   'show_offer', 'make_choice', 'work_rest', 'feedback'])
+
+# data handling
+subj_num = input("Enter subject number: ")
+subj_num = int(subj_num)
+trial_log = CSVWriter_trial(subj_num)
+#block_log = CSVWriter_block(subj_num)
+#subj_log = CSVWriter_subj(subj_num)
+np.random.seed(subj_num)
+total_points = 0
+points_self = 0
+trial_num = 1
+
+
+# make question dictionaries with answers
 
 easy_qs = ['easy1', 'easy2']
+easy_answers = ['easy_answer1', 'easy_answer2']
 medium_qs = ['medium1', 'medium2']
+medium_answers = ['medium_answer1', 'medium_answer2']
 hard_qs = ['hard1', 'hard2']
+hard_answers = ['hard_answer1', 'hard_answer2']
 
 
 # psychopy viz
@@ -34,7 +65,7 @@ win = visual.Window(
 	)
 
 
-BASELINE_TIME = 3
+BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 30 # 30s to answer question
 N_ROUNDS = 2 # 8 rounds total
@@ -65,46 +96,8 @@ t1 = time()
 
 # Instructions
 txt = '''
-We are now going to begin the main part of the experiment. 
-For each trial in this task you will be given an offer to work to 
-either earn points or avoid losing points. You will then be given 
-the choice to either "work" or "rest". \n
+Task Instructions here. \n
 Press the spacebar to continue.
-'''
-wait_for_keypress(win, txt)
-
-txt = '''
-If you choose to work, you'll be asked to squeeze the hand dynamometer
-to a target level for 3 seconds. If you succeed, you will successfully
-obtain the offer. For some offers, the points earned or lost will be applied 
-to you while for other offers the points will go to the next participant. You'll
-be told who the target of the offer is at the beginning of each trial. \n
-Press the spacebar to continue.
-'''
-wait_for_keypress(win, txt)
-
-txt = '''
-After each trial, you will receive feedback as to whether you succeeded
-or failed (if you decided to work) and the number of points earned or lost
-for the trial's target. \n
-Press the spacebar to continue.
-'''
-wait_for_keypress(win, txt)
-
-txt = '''
-Let's do a practice run. Grip the hand dynamometer in your dominant 
-hand. \n
-Press the spacebar when you're ready for the practice round.
-'''
-wait_for_keypress(win, txt)
-
-txt = '''
-Now you're ready for the real task. You will complete a total of 100 trials. 
-After every 25 trials you'll be asked to rate your fatigue levels and will 
-be able to take a short break. Make sure to hold the hand dynamometer
-exclusively in your dominant hand throughout the task. We'll start
-with a fatigue rating. \n
-Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
@@ -116,22 +109,44 @@ for round in range(N_ROUNDS):
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
     # present question and get response
 	if difficulty == 'easy':
-		response = present_question(win, easy_qs[round], ROUND_TIME)
+		question = easy_qs[round]
+		response = present_question(win, question, ROUND_TIME)
+		answer = easy_answers[round]
 	elif difficulty == 'medium':
-		response = present_question(win, medium_qs[round], ROUND_TIME)
+		question = medium_qs[round]
+		response = present_question(win, question, ROUND_TIME)
+		answer = medium_answers[round]
 	elif difficulty == 'hard':
-		response = present_question(win, hard_qs[round], ROUND_TIME)
+		question = hard_qs[round]
+		response = present_question(win, question, ROUND_TIME)
+		answer = hard_answers[round]
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
 	# check answer
-	accuracy = check_answer(response)
+	accuracy = check_answer(response, answer)
 	#  display points earned
-	present_feedback(win, accuracy)
+	points_self = present_feedback(win, difficulty, accuracy)
+	# fixation
+	fixation_cross(win)
+
+	# save data
+	trial_log.write(
+		trial_num,
+		difficulty,
+		question,
+		answer,
+		response, 
+		accuracy,
+		points_self
+	)
+	trial_num += 1
+	total_points += points_self
+	# trial end
 
 t2 = time()
 print('Task Complete.')
 print('The task took %d minutes.'%((t2 - t1)/60))
-#print('Participant earned %d points for themselves.'%(points_self))
+print('Participant earned %d points for themselves.'%(total_points))
 #print('Participant earned %d points for the next participant.'%(points_other))
 
 ##########################
