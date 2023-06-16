@@ -8,6 +8,7 @@ from utils.ui import (
     present_text,
     wait_for_keypress,
     determine_start,
+    present_start_points,
     determine_end,
     choose_difficulty,
     present_question,
@@ -30,8 +31,9 @@ from utils.write import (
 #parport = Triggerer(0)
 #parport.set_trigger_labels(['MVC_start', 'MVC_end',
 #			     'baseline_start', 'baseline_end',
-#			     'fatigue_start', 'fatigue_end',
-#				   'show_offer', 'make_choice', 'work_rest', 'feedback'])
+#			     'choose_difficulty', 'answer_question',
+#				   'start_feedback', 'end_feedback', 
+# 					'initial_points', 'final_points'])
 
 # data handling
 subj_num = input("Enter subject number: ")
@@ -50,14 +52,142 @@ total_points_self = points_self
 trial_num = 1
 
 
-# make question dictionaries with answers
+# make question and answer lists
 
-easy_qs = ['easy1', 'easy2']
-easy_answers = ['easy_answer1', 'easy_answer2']
-medium_qs = ['medium1', 'medium2']
-medium_answers = ['medium_answer1', 'medium_answer2']
-hard_qs = ['hard1', 'hard2']
-hard_answers = ['hard_answer1', 'hard_answer2']
+easy_qs = \
+	['What is the fastest land animal on the planet?',
+  'What is the largest mammal on the planet?',
+  'What is the capital of China?',
+  'How many continents are there?',
+  'What is the largest country in the world?',
+  'Which country has the largest population in the world?',
+  'What is the most widely spoken language in Brazil?',
+  'What does the B in FBI stand for?',
+  'Who plays the Hulk in the Avengers movies?',
+  'Which movie won the Oscar for Best Picture/Movie in 2020?',
+  'Which TV series features the characters Cersei, Jon, Jamie, and Daenerys?',
+  'Which Korean song was the first to have one billion views on Youtube?',
+  'Which song has the most views on YouTube?',
+  'Which famous band consisted of the members John, Paul, Ringo, and George?',
+  'Who is the president of China?',
+  'Who is the prime minister of Canada?',
+  'Which Olympian has earned the most medals in history?',
+  'Which Dutch painter cut of part of his/her ear?',
+  'What is the style in which Andy Warhol painted?']
+easy_answers = \
+	['Cheetah',
+  '(Blue) whale',
+  'Beijing',
+  '7',
+  'Russia',
+  'China',
+  'Portuguese',
+  'Bureau',
+  'Mark Ruffalo',
+  'Parasite',
+  'Game of Thrones',
+  'Gangnam Style',
+  'Despacito',
+  'The Beatles',
+  'Xi Jinping',
+  'Trudeau',
+  'Michael Phelps',
+  'Van Gogh',
+  'Pop art (or modern art)']
+medium_qs = \
+    ['What is the slowest mammal in the world?',
+     'Which animal kills most humans?',
+	 'What does the scoville heat unit measure?',
+	 'What is the largest organ in the human body?',
+	 'What is the capital of Canada?',
+	 'What is the capital of Australia?',
+	 'What is the name of the world\'s longest river?',
+	 'Which country is also known as the Democratic Republic of Korea?',
+	 'What is the smallest country in the world?',
+	 'What is the most widely spoken native language in the world?',
+	 'Which language is spoken in Hong Kong? (Chinese is not the name of the language)',
+	 'Which actor plays the joker in the latest The Joker movie?',
+	 'Which iconic TV featured the main characters, Samantha, Carrie, Cynthia and Charlotte?',
+	 'What is the most sold music album worldwide in history?',
+	 'What is Bob Dylan\'s real name? ',
+	 'Which band has sold the most records in history?',
+	 'Who is the head of state of Canada?',
+	 'How many countries were there in the EU in 2018?',
+	 'How many players (including goal keeper) are there on the field during a soccer game?',
+	 'Which active NBA player holds the record for most points?',
+	 'How many paintings did van Gogh sell during is life?',
+	 'Who painted The Scream?',
+	 'Which pop art painter\'s paintings resemble comics and cartoons?',
+	 'Which country produces most coffee in the world?',
+	 'Which book inspired the name of the store Starbucks?']
+medium_answers = \
+	['Sloth',
+  'Mosquito',
+  'spicy heat of a chili pepper',
+  'Skin',
+  'Ottawa',
+  'Canberra',
+  'The Nile',
+  'North Korea',
+  'Vatican',
+  'Mandarin',
+  'Cantonese',
+  'Joaquin Phoenix',
+  'Sex and the City',
+  'Michael Jackson - Thriller',
+  'Robert Zimmerman',
+  'the Beatles',
+  'Queen Elizabeth',
+  '28 (pre-brexit)',
+  '22',
+  'LeBron James',
+  '1',
+  'Edvard Munch',
+  'Roy Liechtenstein',
+  'Brazil',
+  'Moby Dick']
+hard_qs = \
+	['Which bone are babies born without?',
+  'Who discovered penicilin?',
+  'What name is used to refer to a group of frogs?',
+  'What is the hardest substance in the human body?',
+  'What is the worldst tallest grass?',
+  'What is the capital of Malawi?',
+  'Which country has the highest population density in the world?',
+  'Which american state has the smallest population?',
+  'What is someone who suffers oneirophobia afraid of?',
+  'What are the three main spoken languages in Switzerland?',
+  'Which American President did not speak English as his first language?',
+  'Who is the director of The Grand Budapest Hotel?',
+  'What African country served as the setting for Tatooine in Star Wars?',
+  'Who wrote the Opera Madame Butterfly?',
+  'Who was the first female singer to be introduced to the rock \'n roll hall of fame?',
+  'Who is the president of Germany?',
+  'What degree does Angela Merkel have?',
+  'Which female athlete has won the most Olympic medals in history?',
+  'Which famous painter lived in Tahiti?',
+  'Who said \"in the future everybody will be famous for 15 minutes\"?']
+hard_answers = \
+	['Knee cap',
+  'Alexander Fleming',
+  'An army',
+  'Tooth enamel',
+  'Bamboo',
+  'Lilongwe',
+  'Monaco',
+  'Wyoming',
+  'Dreams',
+  'German, French, Italian',
+  'Martin van Buren',
+  'Wes Anderson',
+  'Tunisia',
+  'Puccini',
+  'Aretha Franklin',
+  'Steinmeier',
+  'PhD in quantum chemistry',
+  'Larisa Latynina',
+  'Gaugain',
+  'Andy Warhol']
 
 
 # psychopy viz
@@ -77,6 +207,7 @@ BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 30 # 30s to answer question
 N_ROUNDS = 2 # 8 rounds total
+START_DISPLAY_TIME = 3
 END_DISPLAY_TIME = 3
 
 
@@ -112,21 +243,29 @@ wait_for_keypress(win, txt)
 
 # Run Trivia Task
 
+# present starting state
+#parport.send_trigger('initial_points')
+present_start_points(win, points_self, points_conf1, points_conf2, START_DISPLAY_TIME)
+
 # cycle through rounds
 for round in range(N_ROUNDS):
     # choose difficulty
+	#parport.send_trigger('choose_difficulty')
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
     # present question and get response
 	if difficulty == 'easy':
 		question = easy_qs[round]
+		#parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 		answer = easy_answers[round]
 	elif difficulty == 'medium':
 		question = medium_qs[round]
+		#parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 		answer = medium_answers[round]
 	elif difficulty == 'hard':
 		question = hard_qs[round]
+		#parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 		answer = hard_answers[round]
 	else:
@@ -134,7 +273,9 @@ for round in range(N_ROUNDS):
 	# check answer
 	accuracy = check_answer(response, answer)
 	#  display points earned
+	#parport.send_trigger('start_feedback')
 	points_self = present_feedback(win, difficulty, accuracy)
+	#parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)
 
@@ -154,6 +295,7 @@ for round in range(N_ROUNDS):
 
 # end state
 points_conf1, points_conf2 = determine_end(subj_cond, total_points_self)
+#parport.send_trigger('final_points')
 present_end_points(win, total_points_self, points_conf1, points_conf2, END_DISPLAY_TIME)
 
 t2 = time()

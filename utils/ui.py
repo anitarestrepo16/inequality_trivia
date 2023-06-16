@@ -52,6 +52,19 @@ def determine_start(condition):
 	
 	return (self_start, conf1_start, conf2_start)
 
+def present_start_points(win, self_pts, conf1_pts, conf2_pts, display_time):
+	'''
+	Display start point state on screen.
+	'''
+	self_txt = visual.TextStim(win, text = "You are starting with " + str(self_pts) + " points", color = 'red', pos = (0, 0.3))
+	conf1_txt = visual.TextStim(win, text = "Player 2 is starting with " + str(conf1_pts) + " points", color = 'blue', pos = (0, 0))
+	conf2_txt = visual.TextStim(win, text = "Player 3 is starting with  " + str(conf2_pts) + " points", color = 'green', pos = (0, -0.3))
+	self_txt.draw()
+	conf1_txt.draw()
+	conf2_txt.draw()
+	win.flip()
+	core.wait(display_time)
+
 def determine_end(condition, subj_total_points):
 	'''
 	Determine ending points for confederates
@@ -73,9 +86,9 @@ def present_end_points(win, self_pts, conf1_pts, conf2_pts, display_time):
 	'''
 	Display end point state on screen.
 	'''
-	self_txt = visual.TextStim(win, text = "You won " + str(self_pts) + "points", color = 'red', pos = (0, 0.3))
-	conf1_txt = visual.TextStim(win, text = "Player 2 won " + str(conf1_pts) + "points", color = 'blue', pos = (0, 0))
-	conf2_txt = visual.TextStim(win, text = "Player 3 won " + str(conf2_pts) + "points", color = 'green', pos = (0, -0.3))
+	self_txt = visual.TextStim(win, text = "You won " + str(self_pts) + " points", color = 'red', pos = (0, 0.3))
+	conf1_txt = visual.TextStim(win, text = "Player 2 won " + str(conf1_pts) + " points", color = 'blue', pos = (0, 0))
+	conf2_txt = visual.TextStim(win, text = "Player 3 won " + str(conf2_pts) + " points", color = 'green', pos = (0, -0.3))
 	self_txt.draw()
 	conf1_txt.draw()
 	conf2_txt.draw()
