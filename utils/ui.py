@@ -2,6 +2,7 @@ from psychopy import visual, core, event
 from psychopy.tools.filetools import fromFile, toFile
 import numpy as np
 from time import time
+import re
 
 def fixation_cross(win):
 	'''
@@ -177,10 +178,19 @@ def present_question(win, question, wait_time):
 
 def check_answer(response, answer):
 	'''
-	Compare participant's response to correct answer and 
+	Compare participant's response (a string)
+	  to correct answer (a list of strings) and 
 	return accuracy (1 or 0). 
 	'''
-	if response == answer:
+	# lower case
+	response = str.lower(response)
+	answer = [str.lower(item) for item in answer]
+	# remove non-alphanumeric
+	response = re.sub(r'\W+', '', response)
+	answer = [re.sub(r'\W+', '', item) for item in answer]
+
+	# check if response is in list of possible answers
+	if response in answer:
 		return 1
 	else:
 		return 0

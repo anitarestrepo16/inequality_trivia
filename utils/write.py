@@ -77,7 +77,7 @@ class CSVWriter_trial:
         writes a trial's parameters to log
         '''
 
-        line = '\n%i,%s,%s,%s,%s,%i,%i'%(
+        line = '\n%i,%s,%s,%s,%s,%f,%f'%(
             trial_num, difficulty, question, answer, response, accuracy, points_earned)
         self._f.write(line)
 
