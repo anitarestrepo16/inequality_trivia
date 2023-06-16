@@ -125,15 +125,15 @@ class CSVWriter_subj:
             os.makedirs(dir)
         fpath = os.path.join(dir, 'subject%d_subj_dat.csv'%subj_num)
         self._f = open(fpath, 'w')
-        self._f.write('subj_id,MVC')
+        self._f.write('subj_id,condition')
 
-    def write(self, subj_num, MVC):
+    def write(self, subj_num, subj_cond):
         '''
         writes a trial's parameters to log
         '''
 
-        line = '\n%i,%f'%(
-            subj_num, MVC)
+        line = '\n%i,%s'%(
+            subj_num, subj_cond)
         self._f.write(line)
 
     def close(self):

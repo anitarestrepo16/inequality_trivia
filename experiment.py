@@ -7,10 +7,13 @@ from utils.ui import (
     fixation_cross,
     present_text,
     wait_for_keypress,
+    determine_start,
+    determine_end,
     choose_difficulty,
     present_question,
     check_answer,
-    present_feedback
+    present_feedback,
+    present_end_points
 )
 
 from utils.write import (
@@ -35,10 +38,15 @@ subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 trial_log = CSVWriter_trial(subj_num)
 #block_log = CSVWriter_block(subj_num)
-#subj_log = CSVWriter_subj(subj_num)
+subj_log = CSVWriter_subj(subj_num)
+subj_cond = input("Enter subject condition: ")
+subj_cond = str(subj_cond)
+subj_log.write(subj_num, subj_cond)
 np.random.seed(subj_num)
-total_points = 0
-points_self = 0
+
+# starting points
+points_self, points_conf1, points_conf2 = determine_start(subj_cond)
+total_points_self = points_self
 trial_num = 1
 
 
@@ -69,6 +77,7 @@ BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 30 # 30s to answer question
 N_ROUNDS = 2 # 8 rounds total
+END_DISPLAY_TIME = 3
 
 
 ########################
@@ -140,13 +149,17 @@ for round in range(N_ROUNDS):
 		points_self
 	)
 	trial_num += 1
-	total_points += points_self
+	total_points_self += points_self
 	# trial end
+
+# end state
+points_conf1, points_conf2 = determine_end(subj_cond, total_points_self)
+present_end_points(win, total_points_self, points_conf1, points_conf2, END_DISPLAY_TIME)
 
 t2 = time()
 print('Task Complete.')
 print('The task took %d minutes.'%((t2 - t1)/60))
-print('Participant earned %d points for themselves.'%(total_points))
+print('Participant earned %d points for themselves.'%(total_points_self))
 #print('Participant earned %d points for the next participant.'%(points_other))
 
 ##########################

@@ -30,6 +30,59 @@ def wait_for_keypress(win, message = ''):
 		present_text(win, message)
 	event.waitKeys(keyList = ["space"]) # wait until subject responds
 
+def determine_start(condition):
+	'''
+	Determine the starting points for all players
+	depending on experimental condition.
+	'''
+	if condition == 'inequality':
+		self_start = 10
+		conf1_start = 15
+		conf2_start = 30
+	elif condition == 'meritocracy':
+		self_start = 10
+		conf1_start = 10
+		conf2_start = 10
+	elif condition == 'equality':
+		self_start = 10
+		conf1_start = 10
+		conf2_start = 10
+	else:
+		return "ERROR - NO VALID CONDITION ENTERED"
+	
+	return (self_start, conf1_start, conf2_start)
+
+def determine_end(condition, subj_total_points):
+	'''
+	Determine ending points for confederates
+	based on condition and points earned by participant.
+	'''
+	if condition == 'inequality':
+		conf1_end = subj_total_points + 10
+		conf2_end = subj_total_points + 30
+	elif condition == 'meritocracy':
+		conf1_end = subj_total_points + 10
+		conf2_end = subj_total_points + 30
+	elif condition == 'equality':
+		conf1_end = subj_total_points + 2
+		conf2_end = subj_total_points + 4
+	
+	return (conf1_end, conf2_end)
+
+def present_end_points(win, self_pts, conf1_pts, conf2_pts, display_time):
+	'''
+	Display end point state on screen.
+	'''
+	self_txt = visual.TextStim(win, text = "You won " + str(self_pts) + "points", color = 'red', pos = (0, 0.3))
+	conf1_txt = visual.TextStim(win, text = "Player 2 won " + str(conf1_pts) + "points", color = 'blue', pos = (0, 0))
+	conf2_txt = visual.TextStim(win, text = "Player 3 won " + str(conf2_pts) + "points", color = 'green', pos = (0, -0.3))
+	self_txt.draw()
+	conf1_txt.draw()
+	conf2_txt.draw()
+	win.flip()
+	core.wait(display_time)
+
+
 def choose_difficulty(win, wait_time):
 	'''
     Shows options (easy vs. medium vs. hard), waits for mouse click
