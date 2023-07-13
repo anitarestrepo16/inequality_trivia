@@ -196,13 +196,20 @@ def check_answer(response, answer):
 		return 0
 
 
-def present_feedback(win, difficulty, accuracy):
+def present_feedback(win, difficulty, accuracy, total_points, display_time):
 	'''
 	Present text with points lost or gained and return
 		number of points.
 	'''
 	# default
 	outcome = 'nothing'
+	acc_txt = 'nothing'
+
+	# correct/incorrect
+	if accuracy == 1:
+		acc_txt = 'correctly'
+	elif accuracy == 0:
+		acc_txt = 'incorrectly'
 	
 	# if difficulty is easy
 	if difficulty == 'easy':
@@ -235,40 +242,19 @@ def present_feedback(win, difficulty, accuracy):
 			outcome = "-$5.00 for you"
 			points_self = -5
 	
-	present_text(win, outcome)
+	#present_text(win, outcome)
+	self_txt = visual.TextStim(win, text = "You chose a(n) " + difficulty +
+			     " question and answered " + acc_txt + '\n' + 'points earned: ' + 
+				 outcome + '\n' + 'total points: ' + str(total_points), color = 'red', pos = (0, 0.3))
+	#conf1_txt = visual.TextStim(win, text = "Player 2 is starting with " + str(conf1_pts) + " points", color = 'blue', pos = (0, 0))
+	#conf2_txt = visual.TextStim(win, text = "Player 3 is starting with  " + str(conf2_pts) + " points", color = 'green', pos = (0, -0.3))
+	self_txt.draw()
+	#conf1_txt.draw()
+	#conf2_txt.draw()
+	win.flip()
+	core.wait(display_time)
+	
 	return points_self
-
-def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
-	'''
-	If chose to work, presents grip strength segment,
-	otherwise presents "Rest".
-
-	Returns tuple:
-		avg_grip (float): mean grip strength for that trial
-		success (Boolean): whether work trial succeeded
-	'''
-	# if choose to work
-	if ('left' in choice):
-		# Countdown to Grip
-		present_text(win, '3')
-		present_text(win, '3, 2')
-		present_text(win, '3, 2, 1')
-
-		# Grip
-		present_text(win, 'SQUEEZE', 'white', 0.1)
-		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
-		return (avg_grip, success)
-
-	# if choose to rest
-	elif ('right' in choice):
-		# rest segment
-		present_text(win, 'You may rest.')
-		return (-99, False)
-
-	# Anything else
-	else:
-		# catch all
-		present_text(win, 'Please make a choice.')
 
 
 	
