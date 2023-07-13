@@ -195,14 +195,112 @@ def check_answer(response, answer):
 	else:
 		return 0
 
+def determine_points_self(accuracy, difficulty):
+	'''
+	Determine points earned depending on accuracy and difficulty level.
+	'''
+	if difficulty == 'easy':
+		# if got it right
+		if accuracy == 1:
+			points_self = 1
+		# if got it wrong
+		elif accuracy == 0:
+			points_self = -1
+	
+	elif difficulty == 'medium':
+		# if got it right
+		if accuracy == 1:
+			points_self = 3
+		# if got it wrong
+		elif accuracy == 0:
+			points_self = -3
+	
+	elif difficulty == 'hard':
+		# if got it right
+		if accuracy == 1:
+			points_self = 5
+		# if got it wrong
+		elif accuracy == 0:
+			points_self = -5
+	
+	return points_self
 
-def present_feedback(win, difficulty, accuracy, total_points, display_time):
+def determine_confederates_alt(difficulty, conf1_points, conf2_points, condition):
+	'''
+	Determine the confederates' choices and points for the trial.
+	'''
+	# for unequal end state
+	if condition != 'equality':
+		if difficulty == 'easy':
+			conf1_points = conf1_points + 3
+			conf2_points = conf2_points + 3
+		elif difficulty == 'medium':
+			conf1_points = conf1_points + 3
+			conf2_points = conf2_points + 5
+		elif difficulty == 'hard':
+			conf1_points = conf1_points + 5
+			conf2_points = conf2_points + 5
+	# for equal end state
+	elif condition == 'equality':
+		if difficulty == 'easy':
+			conf1_points = conf1_points + 1
+			conf2_points = conf2_points + 1
+		elif difficulty == 'medium':
+			conf1_points = conf1_points + 3
+			conf2_points = conf2_points + 3
+		elif difficulty == 'hard':
+			conf1_points = conf1_points + 5
+			conf2_points = conf2_points + 5
+	
+	return (conf1_points, conf2_points)
+			
+def determine_confederates(total_points_self, total_points_conf1, total_points_conf2, condition):
+	'''
+	Determine the confederates' choices and points for the trial.
+	'''
+	# for unequal end state
+	if condition != 'equality':
+		# confederate 1
+		if total_points_conf1 <= total_points_self + 10:
+			conf1_points = 5
+		elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
+			conf1_points = 3
+		else:
+			conf1_points = 1
+		# confederate 2
+		if total_points_conf2 <= total_points_self + 20:
+			conf2_points = 5
+		elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
+			conf2_points = 3
+		else:
+			conf2_points = 1
+		
+	# for equal end state
+	elif condition == 'equality':
+		# confederate 1
+		if total_points_conf1 <= total_points_self - 5:
+			conf1_points = 5
+		elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
+			conf1_points = 3
+		else:
+			conf1_points = 1
+		# confederate 2
+		if total_points_conf2 <= total_points_self - 3:
+			conf2_points = 5
+		elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
+			conf2_points = 3
+		else:
+			conf2_points = 1
+	
+	return (conf1_points, conf2_points)
+
+
+def present_feedback(win, difficulty, accuracy, points_self, total_points, display_time):
 	'''
 	Present text with points lost or gained and return
 		number of points.
 	'''
 	# default
-	outcome = 'nothing'
 	acc_txt = 'nothing'
 
 	# correct/incorrect
@@ -210,42 +308,12 @@ def present_feedback(win, difficulty, accuracy, total_points, display_time):
 		acc_txt = 'correctly'
 	elif accuracy == 0:
 		acc_txt = 'incorrectly'
-	
-	# if difficulty is easy
-	if difficulty == 'easy':
-		# if got it right
-		if accuracy == 1:
-			outcome = "+$1.00 for you"
-			points_self = 1
-		# if got it wrong
-		elif accuracy == 0:
-			outcome = "-$1.00 for you"
-			points_self = -1
-	# if difficulty is medium
-	elif difficulty == 'medium':
-		# if got it right
-		if accuracy == 1:
-			outcome = "+$3.00 for you"
-			points_self = 3
-		# if got it wrong
-		elif accuracy == 0:
-			outcome = "-$3.00 for you"
-			points_self = -3
-	# if difficulty is hard
-	elif difficulty == 'hard':
-		# if got it right
-		if accuracy == 1:
-			outcome = "+$5.00 for you"
-			points_self = 5
-		# if got it wrong
-		elif accuracy == 0:
-			outcome = "-$5.00 for you"
-			points_self = -5
+
 	
 	#present_text(win, outcome)
 	self_txt = visual.TextStim(win, text = "You chose a(n) " + difficulty +
-			     " question and answered " + acc_txt + '\n' + 'points earned: ' + 
-				 outcome + '\n' + 'total points: ' + str(total_points), color = 'red', pos = (0, 0.3))
+			     " question and answered " + acc_txt + '\n points earned: ' + 
+				 str(points_self) + '\n total points: ' + str(total_points), color = 'red', pos = (0, 0.3))
 	#conf1_txt = visual.TextStim(win, text = "Player 2 is starting with " + str(conf1_pts) + " points", color = 'blue', pos = (0, 0))
 	#conf2_txt = visual.TextStim(win, text = "Player 3 is starting with  " + str(conf2_pts) + " points", color = 'green', pos = (0, -0.3))
 	self_txt.draw()

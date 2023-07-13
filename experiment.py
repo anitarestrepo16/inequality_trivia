@@ -13,6 +13,8 @@ from utils.ui import (
     choose_difficulty,
     present_question,
     check_answer,
+    determine_points_self,
+    determine_confederates,
     present_feedback,
     present_end_points
 )
@@ -49,6 +51,8 @@ np.random.seed(subj_num)
 # starting points
 points_self, points_conf1, points_conf2 = determine_start(subj_cond)
 total_points_self = points_self
+total_points_conf1 = points_conf1
+total_points_conf2 = points_conf2
 trial_num = 1
 
 
@@ -130,7 +134,7 @@ wait_for_keypress(win, txt)
 
 # present starting state
 #parport.send_trigger('initial_points')
-present_start_points(win, points_self, points_conf1, points_conf2, START_DISPLAY_TIME)
+present_start_points(win, total_points_self, total_points_conf1, total_points_conf2, START_DISPLAY_TIME)
 
 # cycle through rounds
 for round in range(N_ROUNDS):
@@ -152,12 +156,16 @@ for round in range(N_ROUNDS):
 		response = present_question(win, question, ROUND_TIME)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
-	# check answer
+	# check answer and determine point changes
 	accuracy = check_answer(response, answer)
+	points_self = determine_points_self(accuracy, difficulty)
 	total_points_self += points_self
+	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond)
+	total_points_conf1 += points_conf1
+	total_points_conf2 += points_conf2
 	#  display points earned
 	#parport.send_trigger('start_feedback')
-	points_self = present_feedback(win, difficulty, accuracy, total_points_self, FEEDBACK_DISPLAY_TIME)
+	present_feedback(win, difficulty, accuracy, points_self, total_points_self, FEEDBACK_DISPLAY_TIME)
 	#parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)
@@ -179,7 +187,7 @@ for round in range(N_ROUNDS):
 # end state
 points_conf1, points_conf2 = determine_end(subj_cond, total_points_self)
 #parport.send_trigger('final_points')
-present_end_points(win, total_points_self, points_conf1, points_conf2, END_DISPLAY_TIME)
+present_end_points(win, total_points_self, total_points_conf1, total_points_conf2, END_DISPLAY_TIME)
 
 t2 = time()
 print('Task Complete.')
