@@ -21,7 +21,6 @@ from utils.ui import (
 
 from utils.write import (
     CSVWriter_trial,
-	CSVWriter_block,
 	CSVWriter_subj
 ) 
 
@@ -41,7 +40,6 @@ from utils.write import (
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 trial_log = CSVWriter_trial(subj_num)
-#block_log = CSVWriter_block(subj_num)
 subj_log = CSVWriter_subj(subj_num)
 subj_cond = input("Enter subject condition: ")
 subj_cond = str(subj_cond)
@@ -58,9 +56,15 @@ trial_num = 1
 
 # make question and answer lists
 
+super_easy_qs = \
+	[('Which domesticated animal is related to wolves?', ['dog', 'dogs']),
+  ('What is the capital of France?', ['Paris']),
+  ('What is the capital of Italy?', ['Rome']),
+  ('What is the most widely spoken language in Ireland?', ['english'])]
+
 easy_qs = \
 	[('What is the fastest land animal on the planet?', ['Cheetah']),
-  ('What is the largest mammal on the planet?', ['whale', 'blue whale']),
+  ('What is the largest mammal on the planet?', ['whale', 'blue whale', 'whales', 'blue whales']),
   ('What is the capital of China?', ['Beijing']),
   ('How many continents are there?', ['7', 'seven'])]
 
@@ -70,6 +74,11 @@ medium_qs = \
 	 ('What does the scoville heat unit measure?', ['spicy', 'spiciness', 'hotness', 'heat', 'spice level', 'heat level', 'spicy heat of a chili pepper'])]
 
 hard_qs = \
+	[('Which bone are babies born without?', ['Knee cap']),
+  ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
+  ('What name is used to refer to a group of frogs?', ['An army', 'army'])]
+
+super_hard_qs = \
 	[('Which bone are babies born without?', ['Knee cap']),
   ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
   ('What name is used to refer to a group of frogs?', ['An army', 'army'])]
@@ -179,14 +188,15 @@ for round in range(N_ROUNDS):
 		answer[0],
 		str.rstrip(response), 
 		accuracy,
-		points_self
+		points_self,
+		points_conf1,
+		points_conf2
 	)
 	trial_num += 1
 	
 	# trial end
 
 # end state
-points_conf1, points_conf2 = determine_end(subj_cond, total_points_self)
 #parport.send_trigger('final_points')
 present_end_points(win, total_points_self, total_points_conf1, total_points_conf2, END_DISPLAY_TIME)
 
