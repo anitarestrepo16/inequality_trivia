@@ -94,7 +94,7 @@ win = visual.Window(
 BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 30 # 30s to answer question
-N_ROUNDS = 2 # 8 rounds total
+N_ROUNDS = 5 # 8 rounds total
 START_DISPLAY_TIME = 3
 END_DISPLAY_TIME = 3
 FEEDBACK_DISPLAY_TIME = 5
@@ -165,7 +165,8 @@ for round in range(N_ROUNDS):
 	total_points_conf2 += points_conf2
 	#  display points earned
 	#parport.send_trigger('start_feedback')
-	present_feedback(win, difficulty, accuracy, points_self, total_points_self, FEEDBACK_DISPLAY_TIME)
+	present_feedback(win, difficulty, accuracy, points_self, total_points_self, 
+		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME)
 	#parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)

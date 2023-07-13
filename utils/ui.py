@@ -295,34 +295,58 @@ def determine_confederates(total_points_self, total_points_conf1, total_points_c
 	return (conf1_points, conf2_points)
 
 
-def present_feedback(win, difficulty, accuracy, points_self, total_points, display_time):
+def present_feedback(win, difficulty, accuracy, points_self, total_points, 
+		     conf1_points, conf2_points, total_points_conf1, total_points_conf2, display_time):
 	'''
-	Present text with points lost or gained and return
-		number of points.
+	Present text with points lost or gained.
 	'''
+
+	### Subject
 	# default
 	acc_txt = 'nothing'
-
 	# correct/incorrect
 	if accuracy == 1:
 		acc_txt = 'correctly'
 	elif accuracy == 0:
 		acc_txt = 'incorrectly'
-
-	
-	#present_text(win, outcome)
 	self_txt = visual.TextStim(win, text = "You chose a(n) " + difficulty +
-			     " question and answered " + acc_txt + '\n points earned: ' + 
-				 str(points_self) + '\n total points: ' + str(total_points), color = 'red', pos = (0, 0.3))
-	#conf1_txt = visual.TextStim(win, text = "Player 2 is starting with " + str(conf1_pts) + " points", color = 'blue', pos = (0, 0))
-	#conf2_txt = visual.TextStim(win, text = "Player 3 is starting with  " + str(conf2_pts) + " points", color = 'green', pos = (0, -0.3))
+			    " question and answered " + acc_txt + '\n points earned: ' + 
+				str(points_self) + '\n total points: ' + str(total_points), color = 'red', pos = (0, 0.3))	
+
+	### Confederate 1
+	if conf1_points == 1:
+		conf1_diff = 'easy'
+	elif conf1_points == 3:
+		conf1_diff = 'medium'
+	elif conf1_points == 5:
+		conf1_diff = 'hard'
+
+	conf1_txt = visual.TextStim(win, text = "Player 2 chose a(n) " + conf1_diff + " question and answered correctly" +
+			     '\n points earned: ' + str(conf1_points)  + 
+				 '\n total points: ' + str(total_points_conf1), color = 'blue', pos = (0, 0.3))
+
+	### Confederate 2
+	if conf2_points == 1:
+		conf2_diff = 'easy'
+	elif conf2_points == 3:
+		conf2_diff = 'medium'
+	elif conf2_points == 5:
+		conf2_diff = 'hard'
+
+	conf2_txt = visual.TextStim(win, text = "Player 3 chose a(n) " + conf2_diff + " question and answered correctly" +
+			     '\n points earned: ' + str(conf2_points)  + 
+				 '\n total points: ' + str(total_points_conf2), color = 'green', pos = (0, 0.3))
+	
+	## present sequentially
 	self_txt.draw()
-	#conf1_txt.draw()
-	#conf2_txt.draw()
 	win.flip()
 	core.wait(display_time)
-	
-	return points_self
+	conf1_txt.draw()
+	win.flip()
+	core.wait(display_time)
+	conf2_txt.draw()
+	win.flip()
+	core.wait(display_time)
 
 
 	
