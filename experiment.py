@@ -9,7 +9,6 @@ from utils.ui import (
     wait_for_keypress,
     determine_start,
     present_start_points,
-    determine_end,
     choose_difficulty,
     present_question,
     check_answer,
@@ -52,7 +51,8 @@ total_points_self = points_self
 total_points_conf1 = points_conf1
 total_points_conf2 = points_conf2
 trial_num = 1
-
+n_wrong = 0
+n_correct = 0
 
 # make question and answer lists
 
@@ -76,12 +76,14 @@ medium_qs = \
 hard_qs = \
 	[('Which bone are babies born without?', ['Knee cap']),
   ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
-  ('What name is used to refer to a group of frogs?', ['An army', 'army'])]
+  ('What name is used to refer to a group of frogs?', ['An army', 'army']),
+  ('What is the hardest substance in the human body?', ['Tooth enamel', 'teeth', 'enamel', 'tooth', 'teeth enamel'])]
 
 super_hard_qs = \
-	[('Which bone are babies born without?', ['Knee cap']),
-  ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
-  ('What name is used to refer to a group of frogs?', ['An army', 'army'])]
+	[('What degree does Angela Merkel have?', ['PhD', 'PhD in chemistry', 'chemistry PhD', 'quantum chemistry phd', 'chemistry', 'quantum chemistry', 'PhD in quantum chemistry']),
+  ('Which female athlete has won the most Olympic medals in history?', ['Larisa Latynina', 'Latynina']),
+  ('Which famous painter lived in Tahiti?', ['Gauguin', 'Paul Gauguin']),
+  ('Who said \"in the future everybody will be famous for 15 minutes\"?', ['Andy Warhol', 'Warhol'])]
 
 random.shuffle(easy_qs)
 random.shuffle(medium_qs)
@@ -152,21 +154,43 @@ for round in range(N_ROUNDS):
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
     # present question and get response
 	if difficulty == 'easy':
-		question, answer = easy_qs.pop()
-		#parport.send_trigger('answer_question')
-		response = present_question(win, question, ROUND_TIME)
+		# if got 4 easy questions wrong in a row show super easy q
+		if n_wrong < 4:
+			question, answer = easy_qs.pop()
+			#parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME)
+		else:
+			question, answer = super_easy_qs.pop()
+			#parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'medium':
 		question, answer = medium_qs.pop()
 		#parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'hard':
-		question, answer = hard_qs.pop()
-		#parport.send_trigger('answer_question')
-		response = present_question(win, question, ROUND_TIME)
+		# if got 4 hard questions correct in a row show super hard q
+		if n_correct < 4:
+			question, answer = hard_qs.pop()
+			#parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME)
+		else:
+			question, answer = super_hard_qs.pop()
+			#parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
 	# check answer and determine point changes
 	accuracy = check_answer(response, answer)
+	# decide to conditionally present super easy/super hard qs
+	if (difficulty == 'easy') & (accuracy == 1):
+		n_wrong = 0
+	elif (difficulty == 'easy') & (accuracy == 0):
+		n_wrong += 1
+	elif (difficulty == 'hard') & (accuracy == 0):
+		n_correct = 0
+	elif (difficulty == 'hard') & (accuracy == 1):
+		n_correct += 1
+	# determine point changes
 	points_self = determine_points_self(accuracy, difficulty)
 	total_points_self += points_self
 	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond)
