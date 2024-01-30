@@ -1,0 +1,10 @@
+{
+    "easy_qs": [
+        {"question": "What is the fastest land animal on the planet?", "answers": ["Cheetah"]}, 
+        {"question": "What is the largest mammal on the planet?", "answers": ["whale", "blue whale"]}
+    ],
+    "medium_qs": [
+        {"question": "What is the slowest mammal in the world?", "answers": ["Sloth"]}, 
+        {"question": "Which animal kills most humans?", "answers": ["Mosquito"]}
+    ]
+    }

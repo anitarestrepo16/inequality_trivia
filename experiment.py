@@ -1,4 +1,5 @@
 import numpy as np
+import json
 from psychopy import visual, event
 from time import time
 import random
@@ -55,34 +56,14 @@ n_correct = 0
 
 # read in question and answer lists
 
-super_easy_qs = \
-	[('Which domesticated animal is related to wolves?', ['dog', 'dogs']),
-  ('What is the capital of France?', ['Paris']),
-  ('What is the capital of Italy?', ['Rome']),
-  ('What is the most widely spoken language in Ireland?', ['english'])]
+with open('trivia_questions.json') as f:
+    all_qs = json.load(f)
 
-easy_qs = \
-	[('What is the fastest land animal on the planet?', ['Cheetah']),
-  ('What is the largest mammal on the planet?', ['whale', 'blue whale', 'whales', 'blue whales']),
-  ('What is the capital of China?', ['Beijing']),
-  ('How many continents are there?', ['7', 'seven'])]
-
-medium_qs = \
-    [('What is the slowest mammal in the world?', ['Sloth']),
-     ('Which animal kills most humans?', ['Mosquito']),
-	 ('What does the scoville heat unit measure?', ['spicy', 'spiciness', 'hotness', 'heat', 'spice level', 'heat level', 'spicy heat of a chili pepper'])]
-
-hard_qs = \
-	[('Which bone are babies born without?', ['Knee cap']),
-  ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
-  ('What name is used to refer to a group of frogs?', ['An army', 'army']),
-  ('What is the hardest substance in the human body?', ['Tooth enamel', 'teeth', 'enamel', 'tooth', 'teeth enamel'])]
-
-super_hard_qs = \
-	[('What degree does Angela Merkel have?', ['PhD', 'PhD in chemistry', 'chemistry PhD', 'quantum chemistry phd', 'chemistry', 'quantum chemistry', 'PhD in quantum chemistry']),
-  ('Which female athlete has won the most Olympic medals in history?', ['Larisa Latynina', 'Latynina']),
-  ('Which famous painter lived in Tahiti?', ['Gauguin', 'Paul Gauguin']),
-  ('Who said \"in the future everybody will be famous for 15 minutes\"?', ['Andy Warhol', 'Warhol'])]
+super_easy_qs = all_qs['super_easy_qs']
+easy_qs = all_qs['easy_qs']
+medium_qs = all_qs['medium_qs']
+hard_qs = all_qs['hard_qs']
+super_hard_qs = all_qs['super_hard_qs']
 
 random.shuffle(easy_qs)
 random.shuffle(medium_qs)
@@ -155,25 +136,35 @@ for round in range(N_ROUNDS):
 	if difficulty == 'easy':
 		# if got 4 easy questions wrong in a row show super easy q
 		if n_wrong < 4:
-			question, answer = easy_qs.pop()
+			q_chosen = easy_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 		else:
-			question, answer = super_easy_qs.pop()
+			q_chosen = super_easy_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'medium':
-		question, answer = medium_qs.pop()
+		q_chosen = medium_qs.pop()
+		question = q_chosen['question']
+		answer = q_chosen['answers']
 		parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'hard':
 		# if got 4 hard questions correct in a row show super hard q
 		if n_correct < 4:
-			question, answer = hard_qs.pop()
+			q_chosen = hard_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 		else:
-			question, answer = super_hard_qs.pop()
+			q_chosen = super_hard_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 	else:
