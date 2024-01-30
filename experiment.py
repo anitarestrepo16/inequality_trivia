@@ -23,17 +23,17 @@ from utils.write import (
 	CSVWriter_subj
 ) 
 
-#from utils.triggerer import Triggerer
+from utils.triggerer import Triggerer
 
 #### initialize some things
 
 # parport triggers
-#parport = Triggerer(0)
-#parport.set_trigger_labels(['MVC_start', 'MVC_end',
-#			     'baseline_start', 'baseline_end',
-#			     'choose_difficulty', 'answer_question',
-#				   'start_feedback', 'end_feedback', 
-# 					'initial_points', 'final_points'])
+parport = Triggerer(0)
+parport.set_trigger_labels(['MVC_start', 'MVC_end',
+			     'baseline_start', 'baseline_end',
+			     'choose_difficulty', 'answer_question',
+				   'start_feedback', 'end_feedback', 
+ 					'initial_points', 'final_points'])
 
 # data handling
 subj_num = input("Enter subject number: ")
@@ -91,10 +91,10 @@ random.shuffle(hard_qs)
 
 # psychopy viz
 win = visual.Window(
-	size = (800, 600),
+	size = (1920, 1080),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
-	screen = -1,
+	screen = 1,
 	units = "norm",
 	fullscr = False,
 	pos = (0, 0),
@@ -124,9 +124,9 @@ Press the spacebar when you're ready to begin.
 wait_for_keypress(win, txt)
 
 # Get Baseline Physio
-#parport.send_trigger('baseline_start')
+parport.send_trigger('baseline_start')
 present_text(win, 'Relax', BASELINE_TIME)
-#parport.send_trigger('baseline_end')
+parport.send_trigger('baseline_end')
 
 ########################
 # Trivia Task
@@ -144,38 +144,38 @@ wait_for_keypress(win, txt)
 # Run Trivia Task
 
 # present starting state
-#parport.send_trigger('initial_points')
+parport.send_trigger('initial_points')
 present_start_points(win, total_points_self, total_points_conf1, total_points_conf2, START_DISPLAY_TIME)
 
 # cycle through rounds
 for round in range(N_ROUNDS):
     # choose difficulty
-	#parport.send_trigger('choose_difficulty')
+	parport.send_trigger('choose_difficulty')
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
     # present question and get response
 	if difficulty == 'easy':
 		# if got 4 easy questions wrong in a row show super easy q
 		if n_wrong < 4:
 			question, answer = easy_qs.pop()
-			#parport.send_trigger('answer_question')
+			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 		else:
 			question, answer = super_easy_qs.pop()
-			#parport.send_trigger('answer_question')
+			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'medium':
 		question, answer = medium_qs.pop()
-		#parport.send_trigger('answer_question')
+		parport.send_trigger('answer_question')
 		response = present_question(win, question, ROUND_TIME)
 	elif difficulty == 'hard':
 		# if got 4 hard questions correct in a row show super hard q
 		if n_correct < 4:
 			question, answer = hard_qs.pop()
-			#parport.send_trigger('answer_question')
+			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 		else:
 			question, answer = super_hard_qs.pop()
-			#parport.send_trigger('answer_question')
+			parport.send_trigger('answer_question')
 			response = present_question(win, question, ROUND_TIME)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
@@ -197,10 +197,10 @@ for round in range(N_ROUNDS):
 	total_points_conf1 += points_conf1
 	total_points_conf2 += points_conf2
 	#  display points earned
-	#parport.send_trigger('start_feedback')
+	parport.send_trigger('start_feedback')
 	present_feedback(win, difficulty, accuracy, points_self, total_points_self, 
 		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME)
-	#parport.send_trigger('end_feedback')
+	parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)
 
@@ -221,7 +221,7 @@ for round in range(N_ROUNDS):
 	# trial end
 
 # end state
-#parport.send_trigger('final_points')
+parport.send_trigger('final_points')
 present_end_points(win, total_points_self, total_points_conf1, total_points_conf2, END_DISPLAY_TIME)
 
 t2 = time()
