@@ -29,8 +29,7 @@ from utils.triggerer import Triggerer
 
 # parport triggers
 parport = Triggerer(0)
-parport.set_trigger_labels(['MVC_start', 'MVC_end',
-			     'baseline_start', 'baseline_end',
+parport.set_trigger_labels(['baseline_start', 'baseline_end',
 			     'choose_difficulty', 'answer_question',
 				   'start_feedback', 'end_feedback', 
  					'initial_points', 'final_points'])
@@ -54,7 +53,7 @@ trial_num = 1
 n_wrong = 0
 n_correct = 0
 
-# make question and answer lists
+# read in question and answer lists
 
 super_easy_qs = \
 	[('Which domesticated animal is related to wolves?', ['dog', 'dogs']),
