@@ -15,6 +15,7 @@ from utils.ui import (
     check_answer,
     determine_points_self,
     determine_confederates,
+	present_practice_feedback,
     present_feedback,
     present_end_points
 )
@@ -55,7 +56,6 @@ n_wrong = 0
 n_correct = 0
 
 # read in question and answer lists
-
 with open('trivia_questions.json') as f:
     all_qs = json.load(f)
 
@@ -120,6 +120,28 @@ Task Instructions here. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
+
+# Practice Questions
+practice_qs = [
+	# easy q
+	{"difficulty": 'easy', 
+  "question": "How many legs does a spider have?",
+   "answers": ['8', 'eight']},
+	# medium q
+	{"difficulty": 'medium',
+  "question": "What food do pandas eat?", 
+  "answers": ["bamboo"]},
+	# hard q
+	{"difficulty": 'hard',
+  "question": "How many bones do sharks have?", 
+  "answers": ["0", "zero", "none"]}
+]
+for q in practice_qs:
+	question = q['question']
+	answer = q['answers']
+	response = present_question(win, question, ROUND_TIME)
+	accuracy = check_answer(response, answer)
+	present_practice_feedback(win, accuracy, q['difficulty'], FEEDBACK_DISPLAY_TIME)
 
 # Run Trivia Task
 

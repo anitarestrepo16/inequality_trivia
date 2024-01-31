@@ -294,6 +294,25 @@ def determine_confederates(total_points_self, total_points_conf1, total_points_c
 	
 	return (conf1_points, conf2_points)
 
+def present_practice_feedback(win, accuracy, difficulty, display_time):
+	'''
+	Present text with difficulty level and points earned for participant only.
+	'''
+	# default
+	acc_txt = 'nothing'
+	# correct/incorrect
+	if accuracy == 1:
+		acc_txt = 'correctly'
+	elif accuracy == 0:
+		acc_txt = 'incorrectly'
+	points_earned = determine_points_self(accuracy, difficulty)
+	self_txt = visual.TextStim(win, text = "This was a(n) " + difficulty +
+			    " question and you answered " + acc_txt + '\n points earned: ' + 
+				str(points_earned), color = 'red', pos = (0, 0.3))	
+	self_txt.draw()
+	win.flip()
+	core.wait(display_time)
+
 
 def present_feedback(win, difficulty, accuracy, points_self, total_points, 
 		     conf1_points, conf2_points, total_points_conf1, total_points_conf2, display_time):
