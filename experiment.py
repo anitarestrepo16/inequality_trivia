@@ -82,6 +82,7 @@ win = visual.Window(
 	)
 
 
+
 BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 30 # 30s to answer question
@@ -153,7 +154,7 @@ present_start_points(win, total_points_self, total_points_conf1, total_points_co
 for round in range(N_ROUNDS):
     # choose difficulty
 	parport.send_trigger('choose_difficulty')
-	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
+	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME, round)
     # present question and get response
 	if difficulty == 'easy':
 		# if got 4 easy questions wrong in a row show super easy q
@@ -162,19 +163,19 @@ for round in range(N_ROUNDS):
 			question = q_chosen['question']
 			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			response = present_question(win, question, ROUND_TIME, round)
 		else:
 			q_chosen = super_easy_qs.pop()
 			question = q_chosen['question']
 			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			response = present_question(win, question, ROUND_TIME, round)
 	elif difficulty == 'medium':
 		q_chosen = medium_qs.pop()
 		question = q_chosen['question']
 		answer = q_chosen['answers']
 		parport.send_trigger('answer_question')
-		response = present_question(win, question, ROUND_TIME)
+		response = present_question(win, question, ROUND_TIME, round)
 	elif difficulty == 'hard':
 		# if got 4 hard questions correct in a row show super hard q
 		if n_correct < 4:
@@ -182,13 +183,13 @@ for round in range(N_ROUNDS):
 			question = q_chosen['question']
 			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			response = present_question(win, question, ROUND_TIME, round)
 		else:
 			q_chosen = super_hard_qs.pop()
 			question = q_chosen['question']
 			answer = q_chosen['answers']
 			parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			response = present_question(win, question, ROUND_TIME, round)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
 	# check answer and determine point changes
@@ -211,7 +212,7 @@ for round in range(N_ROUNDS):
 	#  display points earned
 	parport.send_trigger('start_feedback')
 	present_feedback(win, difficulty, accuracy, points_self, total_points_self, 
-		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME)
+		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME, round)
 	parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)

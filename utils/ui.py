@@ -23,6 +23,12 @@ def present_text(win, text_block, text_col = 'white', display_time = 1):
 	win.flip()
 	core.wait(display_time)
 
+def make_round_counter(win, round_num, text_col = 'white', position = (3, 3)):
+	'''
+	Create instance of round counter.
+	'''
+	return visual.TextStim(win, text = "Round: " + str(round_num), color = text_col, pos = position)
+
 def wait_for_keypress(win, message = ''):
 	'''
 	Wait until subject presses spacebar.
@@ -97,11 +103,12 @@ def present_end_points(win, self_pts, conf1_pts, conf2_pts, display_time):
 	core.wait(display_time)
 
 
-def choose_difficulty(win, wait_time):
+def choose_difficulty(win, wait_time, round_num):
 	'''
     Shows options (easy vs. medium vs. hard), waits for mouse click
 	  and records choice. 
     '''
+	round_counter = make_round_counter(win, round_num)
 	mouse = event.Mouse()
 	easy_rect = visual.rect.Rect(win, pos = (-0.6, 0))
 	medium_rect = visual.rect.Rect(win, pos = (0, 0))
@@ -115,6 +122,7 @@ def choose_difficulty(win, wait_time):
 	
 	print(mouse.getPressed())
 	
+	round_counter.draw()
 	easy_rect.draw()
 	medium_rect.draw()
 	hard_rect.draw()
@@ -140,12 +148,14 @@ def choose_difficulty(win, wait_time):
 			if t > t0 + wait_time:
 				return 'no_response'
 	
-def present_question(win, question, wait_time):
+def present_question(win, question, wait_time, round_num):
 	'''
 	Present question, allow response entry as text and record.
 	'''
+	round_counter = make_round_counter(win, round_num)
 	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
 	box = visual.TextBox2(win, '', color = 'white', editable = True)
+	round_counter.draw()
 	q_msg.draw()
 	box.draw()
 	win.flip()
@@ -162,6 +172,7 @@ def present_question(win, question, wait_time):
 			end_txt = True
 		else:
 			box.setAutoDraw(True)
+			round_counter.draw()
 			q_msg.draw()
 			win.flip()
 			t = time()
@@ -315,11 +326,11 @@ def present_practice_feedback(win, accuracy, difficulty, display_time):
 
 
 def present_feedback(win, difficulty, accuracy, points_self, total_points, 
-		     conf1_points, conf2_points, total_points_conf1, total_points_conf2, display_time):
+		     conf1_points, conf2_points, total_points_conf1, total_points_conf2, display_time, round_num):
 	'''
 	Present text with points lost or gained.
 	'''
-
+	round_counter = make_round_counter(win, round_num)
 	### Subject
 	# default
 	acc_txt = 'nothing'
@@ -357,12 +368,15 @@ def present_feedback(win, difficulty, accuracy, points_self, total_points,
 				 '\n total points: ' + str(total_points_conf2), color = 'green', pos = (0, 0.3))
 	
 	## present sequentially
+	round_counter.draw()
 	self_txt.draw()
 	win.flip()
 	core.wait(display_time)
+	round_counter.draw()
 	conf1_txt.draw()
 	win.flip()
 	core.wait(display_time)
+	round_counter.draw()
 	conf2_txt.draw()
 	win.flip()
 	core.wait(display_time)
