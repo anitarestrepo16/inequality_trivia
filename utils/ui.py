@@ -4,6 +4,29 @@ import numpy as np
 from time import time
 import re
 
+class round_counter:
+	def __init__(self, win, round_num, text_col = 'white', position = (0.7, 0.7)):
+		self.counter = visual.TextStim(win, text = "Round: " + str(round_num), color = text_col, pos = position)
+	
+	def draw(self):
+		self.counter.draw()
+
+class countdown_timer:
+	def __init__(self, start, duration):
+		self.start_time = start
+		self.duration = duration
+		self.end_time = start + duration
+		self.time_left = duration
+	
+	def get_time_left(self, current_time):
+		self.time_left = int(self.end_time - current_time)
+		return self.time_left
+	
+	def draw_time_left(self, current_time, win, text_col = 'white', position = (-0.7, 0.7)):
+		self.get_time_left(current_time)
+		return visual.TextStim(win, text = "Time Left: " + str(self.time_left), color = text_col, pos = position).draw()
+
+
 def fixation_cross(win):
 	'''
 	Displays a fixation cross for a random amount of time between
@@ -152,14 +175,18 @@ def present_question(win, question, wait_time, round_num = 0):
 	'''
 	Present question, allow response entry as text and record.
 	'''
+	wait_message = visual.TextStim(win, text = "Please wait for the other players to finish.", color = 'white', pos = (0, 0.5))
 	round_counter = make_round_counter(win, round_num)
 	q_msg = visual.TextStim(win, text = question, color = 'white', pos = (0,0.5))
 	box = visual.TextBox2(win, '', color = 'white', editable = True)
 	round_counter.draw()
 	q_msg.draw()
 	box.draw()
-	win.flip()
+	#win.flip()
 	t0 = time()
+	countdown = countdown_timer(t0, wait_time)
+	countdown.draw_time_left(time(), win)
+	win.flip()
 	t = time()
 	end_txt = False
 	while not end_txt:
@@ -168,12 +195,20 @@ def present_question(win, question, wait_time, round_num = 0):
 			resp = box.getText()
 			box.clear()
 			box.setAutoDraw(False)
+			t = time()
+			while t < t0 + wait_time:
+				wait_message.draw()
+				round_counter.draw()
+				countdown.draw_time_left(time(), win)
+				win.flip()
+				t = time()
 			win.flip()
 			end_txt = True
 		else:
 			box.setAutoDraw(True)
 			round_counter.draw()
 			q_msg.draw()
+			countdown.draw_time_left(time(), win)
 			win.flip()
 			t = time()
 			if t > t0 + wait_time:
