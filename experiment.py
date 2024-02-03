@@ -157,7 +157,7 @@ parport.send_trigger('initial_points')
 present_start_points(win, total_points_self, total_points_conf1, total_points_conf2, START_DISPLAY_TIME)
 
 # cycle through rounds
-for round in range(N_ROUNDS):
+for round in range(1, N_ROUNDS+1, 1):
     # choose difficulty
 	parport.send_trigger('choose_difficulty')
 	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME, round)
