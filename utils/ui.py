@@ -11,7 +11,7 @@ class round_counter:
 	def draw(self):
 		self.counter.draw()
 
-class countdown_timer:
+class CountdownTimer:
 	def __init__(self, start, duration):
 		self.start_time = start
 		self.duration = duration
@@ -25,6 +25,14 @@ class countdown_timer:
 	def draw_time_left(self, current_time, win, text_col = 'white', position = (-0.7, 0.7)):
 		self.get_time_left(current_time)
 		return visual.TextStim(win, text = "Time Left: " + str(self.time_left), color = text_col, pos = position).draw()
+	
+class confederate:
+	def __init__(self):
+		self.starting_points = 0
+		self.end_points = 0
+		self.rounds = {}
+	def run_round(self, round_num):
+		self.rounds[round_num] = ()
 
 
 def fixation_cross(win):
@@ -184,7 +192,7 @@ def present_question(win, question, wait_time, round_num = 0):
 	box.draw()
 	#win.flip()
 	t0 = time()
-	countdown = countdown_timer(t0, wait_time)
+	countdown = CountdownTimer(t0, wait_time)
 	countdown.draw_time_left(time(), win)
 	win.flip()
 	t = time()
@@ -300,43 +308,89 @@ def determine_confederates_alt(difficulty, conf1_points, conf2_points, condition
 	
 	return (conf1_points, conf2_points)
 			
-def determine_confederates(total_points_self, total_points_conf1, total_points_conf2, condition):
+def determine_confederates(total_points_self, total_points_conf1, total_points_conf2, condition, round_num):
 	'''
 	Determine the confederates' choices and points for the trial.
 	'''
-	# for unequal end state
-	if condition != 'equality':
-		# confederate 1
-		if total_points_conf1 <= total_points_self + 10:
-			conf1_points = 5
-		elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
-			conf1_points = 3
-		else:
-			conf1_points = 1
-		# confederate 2
-		if total_points_conf2 <= total_points_self + 20:
-			conf2_points = 5
-		elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
-			conf2_points = 3
-		else:
-			conf2_points = 1
-		
-	# for equal end state
-	elif condition == 'equality':
-		# confederate 1
-		if total_points_conf1 <= total_points_self - 5:
-			conf1_points = 5
-		elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
-			conf1_points = 3
-		else:
-			conf1_points = 1
-		# confederate 2
-		if total_points_conf2 <= total_points_self - 3:
-			conf2_points = 5
-		elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
-			conf2_points = 3
-		else:
-			conf2_points = 1
+	# rounds when both confederates succeed
+	if round_num in [0, 1, 4, 5, 8]:
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self + 10:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+			# confederate 2
+			if total_points_conf2 <= total_points_self + 20:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+			
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self - 5:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+			# confederate 2
+			if total_points_conf2 <= total_points_self - 3:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+	
+	# rounds when confederate 1 fails
+	elif round_num in [2, 6]:
+		conf1_points = -1
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 2
+			if total_points_conf2 <= total_points_self + 20:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 2
+			if total_points_conf2 <= total_points_self - 3:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+	
+	# round when confederate 2 fails
+	elif round_num in [3, 7]:
+		conf2_points = -1
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self + 10:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self - 5:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
+				conf1_points = 3
+			else:
+				conf1_points = 1
 	
 	return (conf1_points, conf2_points)
 
@@ -379,26 +433,34 @@ def present_feedback(win, difficulty, accuracy, points_self, total_points,
 				str(points_self) + '\n total points: ' + str(total_points), color = 'red', pos = (0, 0.3))	
 
 	### Confederate 1
+	conf1_acc = 'correctly'
 	if conf1_points == 1:
 		conf1_diff = 'easy'
 	elif conf1_points == 3:
 		conf1_diff = 'medium'
 	elif conf1_points == 5:
 		conf1_diff = 'hard'
+	elif conf1_points == -1:
+		conf1_diff = 'easy'
+		conf1_acc = 'incorrectly'
 
-	conf1_txt = visual.TextStim(win, text = "Player 2 chose a(n) " + conf1_diff + " question and answered correctly" +
+	conf1_txt = visual.TextStim(win, text = "Player 2 chose a(n) " + conf1_diff + " question and answered " + conf1_acc +
 			     '\n points earned: ' + str(conf1_points)  + 
 				 '\n total points: ' + str(total_points_conf1), color = 'blue', pos = (0, 0.3))
 
 	### Confederate 2
+	conf2_acc = 'correctly'
 	if conf2_points == 1:
 		conf2_diff = 'easy'
 	elif conf2_points == 3:
 		conf2_diff = 'medium'
 	elif conf2_points == 5:
 		conf2_diff = 'hard'
+	elif conf2_points == -1:
+		conf2_diff = 'easy'
+		conf2_acc = 'incorrectly'
 
-	conf2_txt = visual.TextStim(win, text = "Player 3 chose a(n) " + conf2_diff + " question and answered correctly" +
+	conf2_txt = visual.TextStim(win, text = "Player 3 chose a(n) " + conf2_diff + " question and answered " + conf2_acc +
 			     '\n points earned: ' + str(conf2_points)  + 
 				 '\n total points: ' + str(total_points_conf2), color = 'green', pos = (0, 0.3))
 	

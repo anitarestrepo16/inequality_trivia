@@ -85,7 +85,7 @@ win = visual.Window(
 
 BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
-ROUND_TIME = 30 # 30s to answer question
+ROUND_TIME = 10 # 60s to answer question
 N_ROUNDS = 5 # 8 rounds total
 START_DISPLAY_TIME = 3
 END_DISPLAY_TIME = 3
@@ -212,7 +212,7 @@ for round in range(1, N_ROUNDS+1, 1):
 	# determine point changes
 	points_self = determine_points_self(accuracy, difficulty)
 	total_points_self += points_self
-	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond)
+	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond, round)
 	total_points_conf1 += points_conf1
 	total_points_conf2 += points_conf2
 	#  display points earned

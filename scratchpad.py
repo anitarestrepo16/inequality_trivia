@@ -1,4 +1,5 @@
 import numpy as np
+import json
 from psychopy import visual, event
 from time import time
 import random
@@ -13,27 +14,116 @@ from utils.ui import (
     present_question,
     check_answer,
     determine_points_self,
-    determine_confederates,
+    #determine_confederates,
+	present_practice_feedback,
     present_feedback,
     present_end_points
 )
+
+def determine_confederates(total_points_self, total_points_conf1, total_points_conf2, condition, round_num):
+	'''
+	Determine the confederates' choices and points for the trial.
+	'''
+	# rounds when both confederates succeed
+	if round_num in [0, 1, 4, 5, 8]:
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self + 10:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+			# confederate 2
+			if total_points_conf2 <= total_points_self + 20:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+			
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self - 5:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+			# confederate 2
+			if total_points_conf2 <= total_points_self - 3:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+	
+	# rounds when confederate 1 fails
+	elif round_num in [2, 6]:
+		conf1_points = -1
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 2
+			if total_points_conf2 <= total_points_self + 20:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self + 20) & (total_points_conf2 < total_points_self + 30):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 2
+			if total_points_conf2 <= total_points_self - 3:
+				conf2_points = 5
+			elif (total_points_conf2 > total_points_self - 3) & (total_points_conf2 < total_points_self + 2):
+				conf2_points = 3
+			else:
+				conf2_points = 1
+	
+	# round when confederate 2 fails
+	elif round_num in [3, 7]:
+		conf2_points = -1
+		# for unequal end state
+		if condition != 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self + 10:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self + 10) & (total_points_conf1 < total_points_self + 15):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+		# for equal end state
+		elif condition == 'equality':
+			# confederate 1
+			if total_points_conf1 <= total_points_self - 5:
+				conf1_points = 5
+			elif (total_points_conf1 > total_points_self - 5) & (total_points_conf1 < total_points_self + 2):
+				conf1_points = 3
+			else:
+				conf1_points = 1
+	
+	return (conf1_points, conf2_points)
+
+
+
 
 from utils.write import (
     CSVWriter_trial,
 	CSVWriter_subj
 ) 
 
-#from utils.triggerer import Triggerer
+from utils.triggerer import Triggerer
 
 #### initialize some things
 
 # parport triggers
-#parport = Triggerer(0)
-#parport.set_trigger_labels(['MVC_start', 'MVC_end',
-#			     'baseline_start', 'baseline_end',
-#			     'choose_difficulty', 'answer_question',
-#				   'start_feedback', 'end_feedback', 
-# 					'initial_points', 'final_points'])
+parport = Triggerer(0)
+parport.set_trigger_labels(['baseline_start', 'baseline_end',
+			     'choose_difficulty', 'answer_question',
+				   'start_feedback', 'end_feedback', 
+ 					'initial_points', 'final_points'])
 
 # data handling
 subj_num = input("Enter subject number: ")
@@ -54,36 +144,15 @@ trial_num = 1
 n_wrong = 0
 n_correct = 0
 
-# make question and answer lists
+# read in question and answer lists
+with open('trivia_questions.json') as f:
+    all_qs = json.load(f)
 
-super_easy_qs = \
-	[('Which domesticated animal is related to wolves?', ['dog', 'dogs']),
-  ('What is the capital of France?', ['Paris']),
-  ('What is the capital of Italy?', ['Rome']),
-  ('What is the most widely spoken language in Ireland?', ['english'])]
-
-easy_qs = \
-	[('What is the fastest land animal on the planet?', ['Cheetah']),
-  ('What is the largest mammal on the planet?', ['whale', 'blue whale', 'whales', 'blue whales']),
-  ('What is the capital of China?', ['Beijing']),
-  ('How many continents are there?', ['7', 'seven'])]
-
-medium_qs = \
-    [('What is the slowest mammal in the world?', ['Sloth']),
-     ('Which animal kills most humans?', ['Mosquito']),
-	 ('What does the scoville heat unit measure?', ['spicy', 'spiciness', 'hotness', 'heat', 'spice level', 'heat level', 'spicy heat of a chili pepper'])]
-
-hard_qs = \
-	[('Which bone are babies born without?', ['Knee cap']),
-  ('Who discovered penicilin?', ['Alexander Fleming', 'Fleming']),
-  ('What name is used to refer to a group of frogs?', ['An army', 'army']),
-  ('What is the hardest substance in the human body?', ['Tooth enamel', 'teeth', 'enamel', 'tooth', 'teeth enamel'])]
-
-super_hard_qs = \
-	[('What degree does Angela Merkel have?', ['PhD', 'PhD in chemistry', 'chemistry PhD', 'quantum chemistry phd', 'chemistry', 'quantum chemistry', 'PhD in quantum chemistry']),
-  ('Which female athlete has won the most Olympic medals in history?', ['Larisa Latynina', 'Latynina']),
-  ('Which famous painter lived in Tahiti?', ['Gauguin', 'Paul Gauguin']),
-  ('Who said \"in the future everybody will be famous for 15 minutes\"?', ['Andy Warhol', 'Warhol'])]
+super_easy_qs = all_qs['super_easy_qs']
+easy_qs = all_qs['easy_qs']
+medium_qs = all_qs['medium_qs']
+hard_qs = all_qs['hard_qs']
+super_hard_qs = all_qs['super_hard_qs']
 
 random.shuffle(easy_qs)
 random.shuffle(medium_qs)
@@ -91,10 +160,9 @@ random.shuffle(hard_qs)
 
 # psychopy viz
 win = visual.Window(
-	size = (800, 600),
+	size = (1920, 1080),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
-	screen = -1,
 	units = "norm",
 	fullscr = False,
 	pos = (0, 0),
@@ -102,9 +170,10 @@ win = visual.Window(
 	)
 
 
+
 BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
-ROUND_TIME = 30 # 30s to answer question
+ROUND_TIME = 10 # 30s to answer question
 N_ROUNDS = 5 # 8 rounds total
 START_DISPLAY_TIME = 3
 END_DISPLAY_TIME = 3
@@ -124,9 +193,9 @@ Press the spacebar when you're ready to begin.
 wait_for_keypress(win, txt)
 
 # Get Baseline Physio
-#parport.send_trigger('baseline_start')
+parport.send_trigger('baseline_start')
 present_text(win, 'Relax', BASELINE_TIME)
-#parport.send_trigger('baseline_end')
+parport.send_trigger('baseline_end')
 
 ########################
 # Trivia Task
@@ -134,49 +203,52 @@ present_text(win, 'Relax', BASELINE_TIME)
 
 t1 = time()
 
-# Instructions
-txt = '''
-Task Instructions here. \n
-Press the spacebar to continue.
-'''
-wait_for_keypress(win, txt)
-
 # Run Trivia Task
 
 # present starting state
-#parport.send_trigger('initial_points')
+parport.send_trigger('initial_points')
 present_start_points(win, total_points_self, total_points_conf1, total_points_conf2, START_DISPLAY_TIME)
 
 # cycle through rounds
-for round in range(N_ROUNDS):
+for round in range(1, N_ROUNDS+1, 1):
     # choose difficulty
-	#parport.send_trigger('choose_difficulty')
-	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME)
+	parport.send_trigger('choose_difficulty')
+	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME, round)
     # present question and get response
 	if difficulty == 'easy':
 		# if got 4 easy questions wrong in a row show super easy q
 		if n_wrong < 4:
-			question, answer = easy_qs.pop()
-			#parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			q_chosen = easy_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
+			parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME, round)
 		else:
-			question, answer = super_easy_qs.pop()
-			#parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			q_chosen = super_easy_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
+			parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME, round)
 	elif difficulty == 'medium':
-		question, answer = medium_qs.pop()
-		#parport.send_trigger('answer_question')
-		response = present_question(win, question, ROUND_TIME)
+		q_chosen = medium_qs.pop()
+		question = q_chosen['question']
+		answer = q_chosen['answers']
+		parport.send_trigger('answer_question')
+		response = present_question(win, question, ROUND_TIME, round)
 	elif difficulty == 'hard':
 		# if got 4 hard questions correct in a row show super hard q
 		if n_correct < 4:
-			question, answer = hard_qs.pop()
-			#parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			q_chosen = hard_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
+			parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME, round)
 		else:
-			question, answer = super_hard_qs.pop()
-			#parport.send_trigger('answer_question')
-			response = present_question(win, question, ROUND_TIME)
+			q_chosen = super_hard_qs.pop()
+			question = q_chosen['question']
+			answer = q_chosen['answers']
+			parport.send_trigger('answer_question')
+			response = present_question(win, question, ROUND_TIME, round)
 	else:
 		present_text(win, 'No difficulty level chosen.', 'white', ROUND_TIME)
 	# check answer and determine point changes
@@ -193,14 +265,14 @@ for round in range(N_ROUNDS):
 	# determine point changes
 	points_self = determine_points_self(accuracy, difficulty)
 	total_points_self += points_self
-	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond)
+	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond, round)
 	total_points_conf1 += points_conf1
 	total_points_conf2 += points_conf2
 	#  display points earned
-	#parport.send_trigger('start_feedback')
+	parport.send_trigger('start_feedback')
 	present_feedback(win, difficulty, accuracy, points_self, total_points_self, 
-		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME)
-	#parport.send_trigger('end_feedback')
+		     points_conf1, points_conf2, total_points_conf1, total_points_conf2, FEEDBACK_DISPLAY_TIME, round)
+	parport.send_trigger('end_feedback')
 	# fixation
 	fixation_cross(win)
 
@@ -221,7 +293,7 @@ for round in range(N_ROUNDS):
 	# trial end
 
 # end state
-#parport.send_trigger('final_points')
+parport.send_trigger('final_points')
 present_end_points(win, total_points_self, total_points_conf1, total_points_conf2, END_DISPLAY_TIME)
 
 t2 = time()
