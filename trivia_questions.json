@@ -1,10 +1,52 @@
 {
+    "super_easy_qs": [
+        {"question": "What is the fastest land animal on the planet?", "answers": ["Cheetah"]}, 
+        {"question": "What is the largest mammal on the planet?", "answers": ["whale", "blue whale"]},
+        {"question": "What is the capital of China?", "answers": ["Beijing"]},
+        {"question": "How many continents are there?", "answers": ["7", "seven"]},
+        {"question": "What is the largest country in the world?", "answers": ["Russia"]},
+        {"question": "Which country has the largest population in the world", "answers": ["China"]},
+        {"question": "What is the most widely spoken language in Brazil?", "answers": ["Portuguese"]},
+        {"question": "What does the B in FBI stand for?", "answers": ["Bureau"]}
+    ],
     "easy_qs": [
         {"question": "What is the fastest land animal on the planet?", "answers": ["Cheetah"]}, 
-        {"question": "What is the largest mammal on the planet?", "answers": ["whale", "blue whale"]}
+        {"question": "What is the largest mammal on the planet?", "answers": ["whale", "blue whale"]},
+        {"question": "What is the capital of China?", "answers": ["Beijing"]},
+        {"question": "How many continents are there?", "answers": ["7", "seven"]},
+        {"question": "What is the largest country in the world?", "answers": ["Russia"]},
+        {"question": "Which country has the largest population in the world", "answers": ["China"]},
+        {"question": "What is the most widely spoken language in Brazil?", "answers": ["Portuguese"]},
+        {"question": "What does the B in FBI stand for?", "answers": ["Bureau"]}
     ],
     "medium_qs": [
         {"question": "What is the slowest mammal in the world?", "answers": ["Sloth"]}, 
-        {"question": "Which animal kills most humans?", "answers": ["Mosquito"]}
+        {"question": "Which animal kills most humans?", "answers": ["Mosquito"]},
+        {"question": "What does the scoville heat unit measure?", "answers": ["spicy", "spiciness", "hotness", "heat", "spice level", "heat level", "spicy heat of a chili pepper"]},
+        {"question": "What is the largest organ in the human body?", "answers": ["Skin", "the skin"]},
+        {"question": "What is the capital of Canada?", "answers": ["Ottawa"]},
+        {"question": "What is the capital of Australia?", "answers": ["Canberra"]},
+        {"question": "What is the name of the world's longest river?", "answers": ["The Nile", "nile"]},
+        {"question": "Which country is also known as the Democratic Republic of Korea?", "answers": ["North Korea"]}
+    ],
+    "hard_qs": [
+        {"question": "Which bone are babies born without?", "answers": ["Knee cap"]}, 
+        {"question": "Who discovered penicilin?", "answers": ["Alexander Fleming", "Fleming"]},
+        {"question": "What name is used to refer to a group of frogs?", "answers": ["army", "an army"]},
+        {"question": "What is the hardest substance in the human body?", "answers": ["Tooth enamel", "teeth", "enamel", "tooth", "teeth enamel"]},
+        {"question": "What is the world's tallest grass?", "answers": ["Bamboo"]},
+        {"question": "What is the capital of Malawi?", "answers": ["Lilongwe"]},
+        {"question": "Which country has the highest population density in the world?", "answers": ["Monaco"]},
+        {"question": "Which american state has the smallest population?", "answers": ["Wyoming"]}
+    ],
+    "super_hard_qs": [
+        {"question": "What is the fastest land animal on the planet?", "answers": ["Cheetah"]}, 
+        {"question": "What is the largest mammal on the planet?", "answers": ["whale", "blue whale"]},
+        {"question": "What is the capital of China?", "answers": ["Beijing"]},
+        {"question": "How many continents are there?", "answers": ["7", "seven"]},
+        {"question": "What is the largest country in the world?", "answers": ["Russia"]},
+        {"question": "Which country has the largest population in the world", "answers": ["China"]},
+        {"question": "What is the most widely spoken language in Brazil?", "answers": ["Portuguese"]},
+        {"question": "What does the B in FBI stand for?", "answers": ["Bureau"]}
     ]
     }

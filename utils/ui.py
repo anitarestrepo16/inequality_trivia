@@ -23,7 +23,7 @@ def present_text(win, text_block, text_col = 'white', display_time = 1):
 	win.flip()
 	core.wait(display_time)
 
-def make_round_counter(win, round_num, text_col = 'white', position = (3, 3)):
+def make_round_counter(win, round_num, text_col = 'white', position = (0.7, 0.7)):
 	'''
 	Create instance of round counter.
 	'''
@@ -148,7 +148,7 @@ def choose_difficulty(win, wait_time, round_num):
 			if t > t0 + wait_time:
 				return 'no_response'
 	
-def present_question(win, question, wait_time, round_num):
+def present_question(win, question, wait_time, round_num = 0):
 	'''
 	Present question, allow response entry as text and record.
 	'''

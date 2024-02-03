@@ -74,7 +74,7 @@ win = visual.Window(
 	size = (1920, 1080),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
-	screen = 1,
+	screen = -1,
 	units = "norm",
 	fullscr = False,
 	pos = (0, 0),
@@ -119,6 +119,12 @@ t1 = time()
 txt = '''
 Task Instructions here. \n
 Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Now we will do three practice questions, one of each difficulty level. \n
+Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
