@@ -117,13 +117,44 @@ t1 = time()
 
 # Instructions
 txt = '''
-Task Instructions here. \n
+In the present study, you will first play a Trivia game during which you 
+are able to earn raffle tickets for a lucky draw to earn a 100 dollar Amazon gift card. 
+  \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-Now we will do three practice questions, one of each difficulty level. \n
+You will be given an initial amount of tickets and depending on your 
+performance in the game you will either win or lose some tickets.  \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+You will play a total of eight rounds simultaneously with the two other players, 
+although your outcome will not be influenced by their performance.\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Next, you will be asked to complete a short survey on the computer 
+pertaining to your experience of playing the game and provide some
+ feedback on the game for future sessions. 
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+We will begin with some practice questions to get you used 
+to the trivia answering format. You will have 10 seconds to answer each question. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+To answer the questions you will type your answers. 
+Numbers and letters are appropriate and spelling does count. \n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
@@ -253,8 +284,7 @@ print('Participant earned %d points for themselves.'%(total_points_self))
 # and we're done!
 ##########################
 txt = '''
-That's all! You can press the spacebar to end the experiment.
-If the experimenter doesn't come get you immediately, let them
-know you're done using the button on your desk.
+That’s all! You can press the space bar to end the experiment. 
+Please let the experimenter know that you are done.
 '''
 wait_for_keypress(win, txt)
