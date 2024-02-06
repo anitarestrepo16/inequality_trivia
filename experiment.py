@@ -85,11 +85,11 @@ win = visual.Window(
 
 BASELINE_TIME = 3 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
-ROUND_TIME = 10 # 60s to answer question
+ROUND_TIME = 20 # 20s to answer question
 N_ROUNDS = 5 # 8 rounds total
-START_DISPLAY_TIME = 3
-END_DISPLAY_TIME = 3
-FEEDBACK_DISPLAY_TIME = 5
+START_DISPLAY_TIME = 6 # 6s for display of initial points
+END_DISPLAY_TIME = 5 # 5s for display of end points
+FEEDBACK_DISPLAY_TIME = 5 # 5s for display of trial feedback
 
 
 ########################
@@ -142,6 +142,8 @@ txt = '''
 Next, you will be asked to complete a short survey on the computer 
 pertaining to your experience of playing the game and provide some
  feedback on the game for future sessions. 
+ \n
+Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
