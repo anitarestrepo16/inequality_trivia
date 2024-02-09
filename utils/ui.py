@@ -197,7 +197,8 @@ def choose_difficulty(win, wait_time, round_num, self_point_counter, conf1_point
 		else:
 			t = time()
 			if t > t0 + wait_time:
-				return 'no_response'
+				# if time out, assigned medium difficulty
+				return 'medium'
 	
 def present_question(win, question, wait_time, round_num = 0):
 	'''
@@ -210,7 +211,6 @@ def present_question(win, question, wait_time, round_num = 0):
 	round_counter.draw()
 	q_msg.draw()
 	box.draw()
-	#win.flip()
 	t0 = time()
 	countdown = CountdownTimer(t0, wait_time)
 	countdown.draw_time_left(time(), win)
