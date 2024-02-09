@@ -5,6 +5,7 @@ from time import time
 import random
 
 from utils.ui import (
+	translate_condition_codes,
     fixation_cross,
     present_text,
     wait_for_keypress,
@@ -42,7 +43,7 @@ subj_num = int(subj_num)
 trial_log = CSVWriter_trial(subj_num)
 subj_log = CSVWriter_subj(subj_num)
 subj_cond = input("Enter subject condition: ")
-subj_cond = str(subj_cond)
+subj_cond = translate_condition_codes(str(subj_cond))
 subj_log.write(subj_num, subj_cond)
 np.random.seed(subj_num)
 

@@ -4,6 +4,14 @@ import numpy as np
 from time import time
 import re
 
+def translate_condition_codes(marine_animal):
+	if marine_animal.lower() == "shark":
+		return "inequality"
+	elif marine_animal.lower() == "whale":
+		return "equality"
+	elif marine_animal.lower() == "seal":
+		return "meritocracy"
+
 class round_counter:
 	def __init__(self, win, round_num, text_col = 'white', position = (0.7, 0.7)):
 		self.counter = visual.TextStim(win, text = "Round: " + str(round_num), color = text_col, pos = position)
@@ -25,14 +33,6 @@ class CountdownTimer:
 	def draw_time_left(self, current_time, win, text_col = 'white', position = (-0.7, 0.7)):
 		self.get_time_left(current_time)
 		return visual.TextStim(win, text = "Time Left: " + str(self.time_left), color = text_col, pos = position).draw()
-	
-class confederate:
-	def __init__(self):
-		self.starting_points = 0
-		self.end_points = 0
-		self.rounds = {}
-	def run_round(self, round_num):
-		self.rounds[round_num] = ()
 
 
 def fixation_cross(win):
