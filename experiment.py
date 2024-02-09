@@ -5,6 +5,7 @@ from time import time
 import random
 
 from utils.ui import (
+	PointCounter,
 	translate_condition_codes,
     fixation_cross,
     present_text,
@@ -49,6 +50,9 @@ np.random.seed(subj_num)
 
 # starting points
 points_self, points_conf1, points_conf2 = determine_start(subj_cond)
+self_point_counter = PointCounter(player = "You", starting_points = points_self)
+conf1_point_counter = PointCounter(player = "Player 2", starting_points = points_conf1)
+conf2_point_counter = PointCounter(player = "Player 3", starting_points = points_conf2)
 total_points_self = points_self
 total_points_conf1 = points_conf1
 total_points_conf2 = points_conf2
@@ -194,7 +198,8 @@ present_start_points(win, total_points_self, total_points_conf1, total_points_co
 for round in range(1, N_ROUNDS+1, 1):
     # choose difficulty
 	parport.send_trigger('choose_difficulty')
-	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME, round)
+	difficulty = choose_difficulty(win, DIFFICULTY_WAIT_TIME, round,
+								 self_point_counter, conf1_point_counter, conf2_point_counter)
     # present question and get response
 	if difficulty == 'easy':
 		# if got 4 easy questions wrong in a row show super easy q
@@ -245,8 +250,11 @@ for round in range(1, N_ROUNDS+1, 1):
 		n_correct += 1
 	# determine point changes
 	points_self = determine_points_self(accuracy, difficulty)
+	self_point_counter.update_points(points_self)
 	total_points_self += points_self
 	points_conf1, points_conf2 = determine_confederates(total_points_self, total_points_conf1, total_points_conf2, subj_cond, round)
+	conf1_point_counter.update_points(points_conf1)
+	conf2_point_counter.update_points(points_conf2)
 	total_points_conf1 += points_conf1
 	total_points_conf2 += points_conf2
 	#  display points earned

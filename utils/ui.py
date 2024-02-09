@@ -11,6 +11,8 @@ def translate_condition_codes(marine_animal):
 		return "equality"
 	elif marine_animal.lower() == "seal":
 		return "meritocracy"
+	else:
+		print("ERROR: NO VALID CONDITION CODE - START AGAIN")
 
 class round_counter:
 	def __init__(self, win, round_num, text_col = 'white', position = (0.7, 0.7)):
@@ -18,6 +20,19 @@ class round_counter:
 	
 	def draw(self):
 		self.counter.draw()
+
+class PointCounter:
+	def __init__(self, player, starting_points):
+		self.player = player
+		self.points = starting_points
+	
+	def update_points(self, points_earned):
+		self.points += points_earned
+		return self.points
+
+	def draw_points(self, win, position, text_col = 'white'):
+		return visual.TextStim(win, text = str(self.player) + " has earned " + str(self.points) + " points",
+						  color = text_col, pos = position)
 
 class CountdownTimer:
 	def __init__(self, start, duration):
@@ -134,12 +149,13 @@ def present_end_points(win, self_pts, conf1_pts, conf2_pts, display_time):
 	core.wait(display_time)
 
 
-def choose_difficulty(win, wait_time, round_num):
+def choose_difficulty(win, wait_time, round_num, self_point_counter, conf1_point_counter, conf2_point_counter):
 	'''
     Shows options (easy vs. medium vs. hard), waits for mouse click
 	  and records choice. 
     '''
 	round_counter = make_round_counter(win, round_num)
+	instr_text = visual.TextStim(win, text = 'What difficulty do you want for this round?', color = 'white', pos = (0, 0.6))
 	mouse = event.Mouse()
 	easy_rect = visual.rect.Rect(win, pos = (-0.6, 0))
 	medium_rect = visual.rect.Rect(win, pos = (0, 0))
@@ -154,12 +170,16 @@ def choose_difficulty(win, wait_time, round_num):
 	print(mouse.getPressed())
 	
 	round_counter.draw()
+	instr_text.draw()
 	easy_rect.draw()
 	medium_rect.draw()
 	hard_rect.draw()
 	easy_txt.draw()
 	medium_txt.draw()
 	hard_txt.draw()
+	self_point_counter.draw_points(win, position = (-0.7, -0.4), text_col = 'red')
+	conf1_point_counter.draw_points(win, position = (-0.7, -0.5), text_col = 'blue')
+	conf2_point_counter.draw_points(win, position = (-0.7, -0.6), text_col = 'green')
 	win.flip()
 	
 	clicks = mouse.getPressed()
