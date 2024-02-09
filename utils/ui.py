@@ -31,8 +31,8 @@ class PointCounter:
 		return self.points
 
 	def draw_points(self, win, position, text_col = 'white'):
-		return visual.TextStim(win, text = str(self.player) + " has earned " + str(self.points) + " points",
-						  color = text_col, pos = position)
+		return visual.TextStim(win, text = str(self.player) + ": " + str(self.points) + " points",
+						  color = text_col, pos = position).draw()
 
 class CountdownTimer:
 	def __init__(self, start, duration):
@@ -177,9 +177,9 @@ def choose_difficulty(win, wait_time, round_num, self_point_counter, conf1_point
 	easy_txt.draw()
 	medium_txt.draw()
 	hard_txt.draw()
-	self_point_counter.draw_points(win, position = (-0.7, -0.4), text_col = 'red')
-	conf1_point_counter.draw_points(win, position = (-0.7, -0.5), text_col = 'blue')
-	conf2_point_counter.draw_points(win, position = (-0.7, -0.6), text_col = 'green')
+	self_point_counter.draw_points(win, position = (0, -0.4), text_col = 'red')
+	conf1_point_counter.draw_points(win, position = (0, -0.5), text_col = 'blue')
+	conf2_point_counter.draw_points(win, position = (0, -0.6), text_col = 'green')
 	win.flip()
 	
 	clicks = mouse.getPressed()
