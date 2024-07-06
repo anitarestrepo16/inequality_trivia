@@ -88,10 +88,10 @@ win = visual.Window(
 
 
 
-BASELINE_TIME = 3 # 5 minutes (300s)
+BASELINE_TIME = 300 # 5 minutes (300s)
 DIFFICULTY_WAIT_TIME = 30 # 30s to choose difficulty
 ROUND_TIME = 20 # 20s to answer question
-N_ROUNDS = 5 # 8 rounds total
+N_ROUNDS = 8 # 8 rounds total
 START_DISPLAY_TIME = 6 # 6s for display of initial points
 END_DISPLAY_TIME = 5 # 5s for display of end points
 FEEDBACK_DISPLAY_TIME = 5 # 5s for display of trial feedback
@@ -160,7 +160,7 @@ Press the spacebar to continue.
 wait_for_keypress(win, txt)
 
 txt = '''
-To answer the questions you will type your answers. 
+To answer the questions you will type your answers and press enter. 
 Numbers and letters are appropriate and spelling does count. \n
 Press the spacebar when you're ready to begin.
 '''
