@@ -111,7 +111,7 @@ wait_for_keypress(win, txt)
 
 # Get Baseline Physio
 parport.send_trigger('baseline_start')
-present_text(win, 'Relax', BASELINE_TIME)
+present_text(win = win, text_block = 'Relax', text_col = 'white', display_time= BASELINE_TIME)
 parport.send_trigger('baseline_end')
 
 ########################
