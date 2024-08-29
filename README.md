@@ -9,8 +9,8 @@ To run this task script:
 5. type in `python experiment.py` in the terminal to call the main experiment script.
 6. When prompted, type in the subject number (must be numerical).
 7. When prompted, type in the experiment condition. The only valid options are the following strings:
-    - "shark" for the equality condition
-    - "whale" for the inequality condition
+    - "shark" for the inequality condition
+    - "whale" for the equality condition
     - "seal" for the meritocracy condition
 
 Collected experiment data will be saved by subject id in the logs directory.
