@@ -630,15 +630,15 @@ def present_feedback(
 
     ### Confederate 1
     conf1_acc = "correctly"
-    if conf1_points == 1:
-        conf1_diff = "easy"
-    elif conf1_points == 3:
-        conf1_diff = "medium"
-    elif conf1_points == 5:
-        conf1_diff = "hard"
-    elif conf1_points == -1:
-        conf1_diff = "easy"
+    if conf1_points < 0:
         conf1_acc = "incorrectly"
+    if (conf1_points == 1) or (conf1_points == -1):
+        conf1_diff = "easy"
+    elif (conf1_points == 3) or (conf1_points == -3):
+        conf1_diff = "medium"
+    elif (conf1_points == 5) or (conf1_points == -5):
+        conf1_diff = "hard"
+    
 
     conf1_txt = visual.TextStim(
         win,
@@ -656,15 +656,15 @@ def present_feedback(
 
     ### Confederate 2
     conf2_acc = "correctly"
-    if conf2_points == 1:
-        conf2_diff = "easy"
-    elif conf2_points == 3:
-        conf2_diff = "medium"
-    elif conf2_points == 5:
-        conf2_diff = "hard"
-    elif conf2_points == -1:
-        conf2_diff = "easy"
+    if conf2_points < 0:
         conf2_acc = "incorrectly"
+    if (conf2_points == 1) or (conf2_points == -1):
+        conf2_diff = "easy"
+    elif (conf2_points == 3) or (conf2_points == -3):
+        conf2_diff = "medium"
+    elif (conf2_points == 5) or (conf2_points == -5):
+        conf2_diff = "hard"
+    
 
     conf2_txt = visual.TextStim(
         win,
